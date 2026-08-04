@@ -9,14 +9,23 @@ export default function HomePage() {
         <code>Express</code> /<code>Postgres</code> backend
       </p>
       <p className='mb-6'>
-        The Tasks page pulls live data from <code>/api/tasks</code>.
+        The Tasks page pulls live data from <code>/api/tasks</code>. The
+        Protected page only opens when you're logged in.
       </p>
-      <Link
-        to='/tasks'
-        className='inline-block rounded-md bg-(--accent) px-5 py-2.5 font-medium text-white hover:bg-(--accent-border)'
-      >
-        View tasks →
-      </Link>
+      <div className='flex items-center justify-center gap-3'>
+        <Link
+          to='/tasks'
+          className='inline-block rounded-md bg-(--accent) px-5 py-2.5 font-medium text-white hover:bg-(--accent-border)'
+        >
+          View tasks →
+        </Link>
+        <Link
+          to='/protected'
+          className='inline-block rounded-md border border-(--border) px-5 py-2.5 font-medium hover:text-(--text-h)'
+        >
+          Protected page →
+        </Link>
+      </div>
     </section>
   );
 }
