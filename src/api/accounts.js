@@ -15,15 +15,15 @@
 
 // In dev this is your local Express server. In production, set VITE_API_URL to
 // your deployed backend URL. Vite only exposes env vars starting with VITE_.
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
-// READ ALL — GET /api/tasks. Returns an array of tasks.
-export async function getTasks() {
-  const res = await fetch(`${BASE_URL}/api/tasks`, {
+// READ ALL — GET /api/account. Returns an array of tasks.
+export async function getAccounts() {
+  const res = await fetch(`${BASE_URL}/api/accounts`, {
     // Send our login cookie along. Off by default in fetch, and needed the
     // moment an endpoint requires you to be logged in.
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
   });
 
   // fetch only rejects on a NETWORK failure (server down, DNS, CORS). A 404 or
@@ -32,7 +32,7 @@ export async function getTasks() {
   if (!res.ok) {
     // Our backend sends errors as { error: "..." }. Fall back if it didn't.
     const body = await res.json().catch(() => ({}));
-    throw new Error(body.error || `Could not load tasks (${res.status})`);
+    throw new Error(body.error || `Could not load accounts (${res.status})`);
   }
 
   // res.json() reads the response body and parses it. It's async too — the
@@ -40,30 +40,32 @@ export async function getTasks() {
   return res.json();
 }
 
-// READ ONE — GET /api/tasks/:id. Returns a single task, or throws on 404.
-export async function getTask(id) {
-  const res = await fetch(`${BASE_URL}/api/tasks/${id}`, {
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
+// READ ONE — GET /api/accounts/:id. Returns a single account, or throws on 404.
+export async function getAccount(id) {
+  const res = await fetch(`${BASE_URL}/api/accounts/${id}`, {
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
   });
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    throw new Error(body.error || `Could not load task ${id} (${res.status})`);
+    throw new Error(
+      body.error || `Could not load account ${id} (${res.status})`,
+    );
   }
 
   return res.json();
 }
 
-// CREATE — POST /api/tasks. Returns the task the server created (with its new
+// CREATE — POST /api/accounts. Returns the account the server created (with its new
 // id and timestamps), which is why we use the response instead of the object
 // we sent.
-// data = { title, description?, completed? }
-export async function createTask(data) {
-  const res = await fetch(`${BASE_URL}/api/tasks`, {
-    method: 'POST',
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
+// data = { name, type, balance, bank_name }
+export async function createAccount(data) {
+  const res = await fetch(`${BASE_URL}/api/accounts`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
     // fetch will not turn an object into JSON for you. Two things have to
     // agree here: JSON.stringify on the body, and the Content-Type header.
     body: JSON.stringify(data),
@@ -71,28 +73,28 @@ export async function createTask(data) {
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    throw new Error(body.error || `Could not create task (${res.status})`);
+    throw new Error(body.error || `Could not create account (${res.status})`);
   }
 
   return res.json();
 }
 
-// UPDATE — PATCH /api/tasks/:id. Returns the updated task.
-// PATCH changes only the fields you send, so { completed: true } leaves the
-// title alone. (PUT is the other option: it replaces the whole record, so you
+// UPDATE — PATCH /api/accounts/:id. Returns the updated account.
+// PATCH changes only the fields you send
+// (PUT is the other option: it replaces the whole record, so you
 // have to send every field.)
-export async function updateTask(id, data) {
-  const res = await fetch(`${BASE_URL}/api/tasks/${id}`, {
-    method: 'PATCH',
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
+export async function updateAccount(id, data) {
+  const res = await fetch(`${BASE_URL}/api/accounts/${id}`, {
+    method: "PATCH",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
     throw new Error(
-      body.error || `Could not update task ${id} (${res.status})`,
+      body.error || `Could not update account ${id} (${res.status})`,
     );
   }
 
@@ -100,17 +102,17 @@ export async function updateTask(id, data) {
 }
 
 // DELETE — DELETE /api/tasks/:id.
-export async function deleteTask(id) {
-  const res = await fetch(`${BASE_URL}/api/tasks/${id}`, {
-    method: 'DELETE',
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
+export async function deleteAccount(id) {
+  const res = await fetch(`${BASE_URL}/api/accounts/${id}`, {
+    method: "DELETE",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
   });
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
     throw new Error(
-      body.error || `Could not delete task ${id} (${res.status})`,
+      body.error || `Could not delete account ${id} (${res.status})`,
     );
   }
 
