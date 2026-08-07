@@ -12,9 +12,11 @@ import {
 export default function CategoriesPage() {
   const [category, setCategory] = useState({
     name: "",
+    type: "",
     budget: "",
   });
   const [categories, setCategories] = useState([]);
+  const [editingId, seteditingId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -32,6 +34,7 @@ export default function CategoriesPage() {
     try {
       const newCategory = await createCategory({
         name: category.name,
+        type: category.type,
         budget: category.budget,
       });
       setCategories([newCategory, ...categories]);
@@ -40,18 +43,36 @@ export default function CategoriesPage() {
       setError(err.message);
     }
   }
-
+  
   // Delete on the server, then remove it from the list.
   async function handleDelete(id) {
-    try {
-      await deleteCategory(id);
-      setCategories(categories.filter((c) => c.id !== id));
-    } catch (error) {
-      setError(error.message);
+      try {
+          await deleteCategory(id);
+          setCategories(categories.filter((c) => c.id !== id));
+        } catch (error) {
+            setError(error.message);
+        }
     }
-  }
 
-  if (loading) return <p>Loading categories…</p>;
+    async function handleEdit(e){
+        e.preventDefault();
+
+        try{
+            const updated = await updateCategory(editingId, {
+                name: category.name,
+                type: category.type,
+                budget: category.budget,
+            });
+
+            setCategories(categories.map((c) => (c.id === editingId ? updated : c)));
+            seteditingId(null);
+            setCategory({ name: "", type: "", budget: ""});
+        }catch(err){
+            setError(err.message);
+        }
+    }
+    
+    if (loading) return <p>Loading categories…</p>;
 
   return (
     <section>
@@ -65,7 +86,7 @@ export default function CategoriesPage() {
       )}
 
       {/* Add-an-account form */}
-      <form onSubmit={handleCreate} className="mb-6 flex gap-2">
+      <form onSubmit={editingId ? handleEdit : handleCreate} className="mb-6 flex gap-2">
         <input
           value={category.name}
           onChange={(e) => setCategory({ ...category, name: e.target.value })}
@@ -73,7 +94,13 @@ export default function CategoriesPage() {
           className="flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2"
         />
         <input
-          value={account.budget}
+          value={category.type}
+          onChange={(e) => setCategory({ ...category, type: e.target.value })}
+          placeholder="Type"
+          className="flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2"
+        />
+        <input
+          value={category.budget}
           onChange={(e) => setCategory({ ...category, budget: e.target.value })}
           placeholder="Budget"
           className="flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2"
@@ -82,7 +109,7 @@ export default function CategoriesPage() {
           type="submit"
           className="rounded-md bg-(--accent) px-4 py-2 font-medium text-white"
         >
-          Add
+          {editingId ? "Save Changes" : "Add"}
         </button>
       </form>
 
@@ -97,9 +124,18 @@ export default function CategoriesPage() {
               className="flex items-center gap-3 rounded-md border border-(--border) px-4 py-3"
             >
               <Link to={`/categories/${category.id}`} className="flex-1">
-                {category.name} — ${category.budget}{" "}
+                {category.name} — ${category.type} — {category.budget}
               </Link>
 
+               <button 
+               onClick={() => {setEditingId(category.id);
+                                setCategory({
+                                    name: category.name,
+                                    type: category.type,
+                                    budget: category.budget,});  
+               }}
+               className="text-sm text-blue-500 hover:underline"
+               >Edit</button> 
               <button
                 onClick={() => handleDelete(category.id)}
                 className="text-sm text-red-500 hover:underline"
