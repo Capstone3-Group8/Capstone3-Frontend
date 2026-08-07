@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import {
-  getAccounts,
-  createAccount,
-  updateAccount,
-  deleteAccount,
-} from "../api/accounts";
+import { getAccounts, createAccount, updateAccount, deleteAccount,} from "../api/accounts";
 
 // This page shows the full CRUD loop against the backend:
 // read the list, create an account, and delete it.
@@ -17,6 +12,7 @@ export default function AccountsPage() {
     bank_name: "",
   });
   const [accounts, setAccounts] = useState([]);
+  const [editingId, setEditingId] = usestate(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -53,6 +49,11 @@ export default function AccountsPage() {
     } catch (error) {
       setError(error.message);
     }
+  }
+
+  async function handleEdit(e){
+    e.preventDefault();
+
   }
 
   if (loading) return <p>Loading accounts…</p>;
