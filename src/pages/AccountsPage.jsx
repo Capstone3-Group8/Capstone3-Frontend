@@ -17,6 +17,7 @@ export default function AccountsPage() {
     bank_name: "",
   });
   const [accounts, setAccounts] = useState([]);
+  const [editingId, setEditingId] = usestate(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -53,6 +54,11 @@ export default function AccountsPage() {
     } catch (error) {
       setError(error.message);
     }
+  }
+
+  async function handleEdit(e){
+    e.preventDefault();
+    
   }
 
   if (loading) return <p>Loading accounts…</p>;
