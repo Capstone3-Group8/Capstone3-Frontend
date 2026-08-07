@@ -9,15 +9,15 @@ export default function HomePage() {
         <code>Express</code> /<code>Postgres</code> backend
       </p>
       <p className="mb-6">
-        The Tasks page pulls live data from <code>/api/tasks</code>. The
+        The Accountss page pulls live data from <code>/api/accounts</code>. The
         Protected page only opens when you're logged in.
       </p>
       <div className="flex items-center justify-center gap-3">
         <Link
-          to="/tasks"
+          to="/accounts"
           className="inline-block rounded-md bg-(--accent) px-5 py-2.5 font-medium text-white hover:bg-(--accent-border)"
         >
-          View tasks →
+          View Accounts →
         </Link>
         <Link
           to="/protected"
