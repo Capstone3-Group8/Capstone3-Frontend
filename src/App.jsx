@@ -4,7 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
-import TasksPage from './pages/TasksPage';
+import AccountssPage from './pages/AccountsPage';
 import TaskDetailPage from './pages/TaskDetailPage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProtectedPage from './pages/ProtectedPage';
