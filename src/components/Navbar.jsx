@@ -26,8 +26,8 @@ export default function Navbar({ user, onLogout }) {
         <NavLink to='/' end className={linkClass}>
           Home
         </NavLink>
-        <NavLink to='/tasks' className={linkClass}>
-          Tasks
+        <NavLink to='/accounts' className={linkClass}>
+          Accounts
         </NavLink>
 
         {/* Only show the protected link once someone is logged in. */}

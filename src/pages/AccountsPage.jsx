@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import {
-  getAccounts,
-  createAccount,
-  updateAccount,
-  deleteAccount,
-} from "../api/accounts";
+import { getAccounts, createAccount, updateAccount, deleteAccount,} from "../api/accounts";
 
 // This page shows the full CRUD loop against the backend:
 // read the list, create an account, and delete it.
@@ -58,7 +53,7 @@ export default function AccountsPage() {
 
   async function handleEdit(e){
     e.preventDefault();
-    
+
   }
 
   if (loading) return <p>Loading accounts…</p>;

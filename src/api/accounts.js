@@ -19,7 +19,7 @@ const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 // READ ALL — GET /api/account. Returns an array of accounts.
 export async function getAccounts() {
-  const res = await fetch(`${BASE_URL}/api/accounts`, {
+  const res = await fetch(`${BASE_URL}/accounts`, {
     // Send our login cookie along. Off by default in fetch, and needed the
     // moment an endpoint requires you to be logged in.
     credentials: "include",
@@ -42,7 +42,7 @@ export async function getAccounts() {
 
 // READ ONE — GET /api/accounts/:id. Returns a single account, or throws on 404.
 export async function getAccount(id) {
-  const res = await fetch(`${BASE_URL}/api/accounts/${id}`, {
+  const res = await fetch(`${BASE_URL}/accounts/${id}`, {
     credentials: "include",
     headers: { "Content-Type": "application/json" },
   });
@@ -62,7 +62,7 @@ export async function getAccount(id) {
 // we sent.
 // data = { name, type, balance, bank_name }
 export async function createAccount(data) {
-  const res = await fetch(`${BASE_URL}/api/accounts`, {
+  const res = await fetch(`${BASE_URL}/accounts`, {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -84,7 +84,7 @@ export async function createAccount(data) {
 // (PUT is the other option: it replaces the whole record, so you
 // have to send every field.)
 export async function updateAccount(id, data) {
-  const res = await fetch(`${BASE_URL}/api/accounts/${id}`, {
+  const res = await fetch(`${BASE_URL}/accounts/${id}`, {
     method: "PATCH",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -103,7 +103,7 @@ export async function updateAccount(id, data) {
 
 // DELETE — DELETE /api/accounts/:id.
 export async function deleteAccount(id) {
-  const res = await fetch(`${BASE_URL}/api/accounts/${id}`, {
+  const res = await fetch(`${BASE_URL}/accounts/${id}`, {
     method: "DELETE",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
