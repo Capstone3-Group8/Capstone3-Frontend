@@ -4,8 +4,9 @@ import { useAuth0 } from '@auth0/auth0-react';
 
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
-import TasksPage from './pages/TasksPage';
-import TaskDetailPage from './pages/TaskDetailPage';
+import AccountsPage from './pages/AccountsPage';
+// import CategoriesPage from './pages/CategoriesPage';
+import AccountDetailPage from './pages/AccountDetailPage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProtectedPage from './pages/ProtectedPage';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -144,8 +145,9 @@ function App() {
         <Route path='/login' element={<Login setUser={setUser} />} />
         <Route path='/signup' element={<Signup setUser={setUser} />} />
 
-        <Route path='/tasks' element={<TasksPage />} />
-        <Route path='/tasks/:id' element={<TaskDetailPage />} />
+        {/* <Route path='/categories' element={<CategoriesPage />} /> */}
+        <Route path='/accounts' element={<AccountsPage />} />
+        <Route path='/accounts/:id' element={<AccountDetailPage />} />
 
         {/* Only reachable when logged in — ProtectedRoute redirects otherwise. */}
         <Route
