@@ -1,4 +1,4 @@
-// api/tasks.js — every call for the "tasks" resource.
+// api/accounts.js — every call for the "accounts" resource.
 // Copy this file for your own resources (posts, events, ...) and swap the paths.
 //
 // Each function is written out in full — one fetch, one error check, one return
@@ -7,17 +7,17 @@
 // the URL, the method, and whether there's a body.
 //
 // This is CRUD, the five things you do with data:
-//   Create  ->  POST    /api/tasks         createTask
-//   Read    ->  GET     /api/tasks         getTasks    (all)
-//               GET     /api/tasks/:id     getTask     (one)
-//   Update  ->  PATCH   /api/tasks/:id     updateTask
-//   Delete  ->  DELETE  /api/tasks/:id     deleteTask
+//   Create  ->  POST    /api/accounts         createAccount
+//   Read    ->  GET     /api/accounts         getAccounts    (all)
+//               GET     /api/accounts/:id     getAccount     (one)
+//   Update  ->  PATCH   /api/accounts/:id     updateAccount
+//   Delete  ->  DELETE  /api/accounts/:id     deleteAccount
 
 // In dev this is your local Express server. In production, set VITE_API_URL to
 // your deployed backend URL. Vite only exposes env vars starting with VITE_.
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
-// READ ALL — GET /api/account. Returns an array of tasks.
+// READ ALL — GET /api/account. Returns an array of accounts.
 export async function getAccounts() {
   const res = await fetch(`${BASE_URL}/api/accounts`, {
     // Send our login cookie along. Off by default in fetch, and needed the
@@ -101,7 +101,7 @@ export async function updateAccount(id, data) {
   return res.json();
 }
 
-// DELETE — DELETE /api/tasks/:id.
+// DELETE — DELETE /api/accounts/:id.
 export async function deleteAccount(id) {
   const res = await fetch(`${BASE_URL}/api/accounts/${id}`, {
     method: "DELETE",

@@ -8,7 +8,7 @@ import {
 } from "../api/accounts";
 
 // This page shows the full CRUD loop against the backend:
-// read the list, create a accounts, toggle it done, and delete it.
+// read the list, create an account, and delete it.
 export default function AccountsPage() {
   const [account, setAccount] = useState({
     name: "",
