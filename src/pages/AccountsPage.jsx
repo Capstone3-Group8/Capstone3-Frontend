@@ -12,7 +12,7 @@ export default function AccountsPage() {
     bank_name: "",
   });
   const [accounts, setAccounts] = useState([]);
-  const [editingId, setEditingId] = usestate(null);
+  const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 

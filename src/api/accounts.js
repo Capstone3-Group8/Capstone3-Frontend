@@ -15,7 +15,7 @@
 
 // In dev this is your local Express server. In production, set VITE_API_URL to
 // your deployed backend URL. Vite only exposes env vars starting with VITE_.
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+const BASE_URL = /*import.meta.env.VITE_API_URL ||*/ "http://localhost:8080";
 
 // READ ALL — GET /api/account. Returns an array of accounts.
 export async function getAccounts() {
