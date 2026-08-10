@@ -75,7 +75,7 @@ export default function AccountsPage() {
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder='New task title…'
+          placeholder='New account title…'
           className='flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2'
         />
         <input
