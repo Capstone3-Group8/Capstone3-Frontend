@@ -3,14 +3,9 @@ import { Link } from "react-router";
 export default function HomePage() {
   return (
     <section className="text-center">
-      <h1 className="text-7xl">Capstone Starter</h1>
+      <h1 className="text-7xl">Personal Finance Tracker</h1>
       <p className="mb-6">
-        A <code>React</code> + <code>Vite</code> frontend wired to the{" "}
-        <code>Express</code> /<code>Postgres</code> backend
-      </p>
-      <p className="mb-6">
-        The Accountss page pulls live data from <code>/api/accounts</code>. The
-        Protected page only opens when you're logged in.
+        Your Personal Finance Tracker, to help you manage your budgets
       </p>
       <div className="flex items-center justify-center gap-3">
         <Link

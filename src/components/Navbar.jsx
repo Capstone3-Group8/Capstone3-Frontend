@@ -19,13 +19,10 @@ export default function Navbar({ user, onLogout }) {
           to='/'
           className='mr-auto text-lg font-semibold text-(--text-h)'
         >
-          Capstone
+          Home
         </NavLink>
 
         {/* `end` makes "Home" active only on "/" exactly, not on every route. */}
-        <NavLink to='/' end className={linkClass}>
-          Home
-        </NavLink>
         <NavLink to='/accounts' className={linkClass}>
           Accounts
         </NavLink>
