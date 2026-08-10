@@ -15,7 +15,7 @@ export default function AccountsPage() {
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [title, setTitle] = useState('');
   // Load the accounts once, when the page first appears.
   useEffect(() => {
     getAccounts()
@@ -35,6 +35,7 @@ export default function AccountsPage() {
         bank_name: account.bank_name,
       });
       setAccounts([newAccount, ...accounts]);
+       setTitle('');
       setAccount({ name: "", type: "", balance: "", bank_name: "" });
     } catch (err) {
       setError(err.message);
@@ -53,7 +54,7 @@ export default function AccountsPage() {
 
   async function handleEdit(e){
     e.preventDefault();
-
+     if (!title.trim()) return;
   }
 
   if (loading) return <p>Loading accounts…</p>;
@@ -71,6 +72,12 @@ export default function AccountsPage() {
 
       {/* Add-an-account form */}
       <form onSubmit={handleCreate} className="mb-6 flex gap-2">
+        <input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder='New task title…'
+          className='flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2'
+        />
         <input
           value={account.name}
           onChange={(e) => setAccount({ ...account, name: e.target.value })}
