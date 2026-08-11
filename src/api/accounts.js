@@ -32,7 +32,7 @@ export async function getAccounts(token) {
     throw new Error(body.error || `Could not load accounts (${res.status})`);
   }
 
-  return res.json();
+  return await res.json();
 }
 
 // READ ONE — GET /api/accounts/:id. Returns a single account, or throws on 404.
