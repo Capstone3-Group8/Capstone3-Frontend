@@ -18,31 +18,26 @@
 const BASE_URL = /*import.meta.env.VITE_API_URL ||*/ "http://localhost:8080";
 
 // READ ALL — GET /api/account. Returns an array of accounts.
-export async function getAccounts() {
-  const res = await fetch(`${BASE_URL}/accounts`, {
-    // Send our login cookie along. Off by default in fetch, and needed the
-    // moment an endpoint requires you to be logged in.
+export async function getAccounts(token) {
+  const res = await fetch(`${BASE_URL}/account`, {
     credentials: "include",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
   });
 
-  // fetch only rejects on a NETWORK failure (server down, DNS, CORS). A 404 or
-  // a 500 is still a "successful" fetch, so we check res.ok ourselves. This is
-  // the single biggest gotcha in fetch.
   if (!res.ok) {
-    // Our backend sends errors as { error: "..." }. Fall back if it didn't.
     const body = await res.json().catch(() => ({}));
     throw new Error(body.error || `Could not load accounts (${res.status})`);
   }
 
-  // res.json() reads the response body and parses it. It's async too — the
-  // body may still be arriving when the headers have landed.
   return res.json();
 }
 
 // READ ONE — GET /api/accounts/:id. Returns a single account, or throws on 404.
 export async function getAccount(id) {
-  const res = await fetch(`${BASE_URL}/accounts/${id}`, {
+  const res = await fetch(`${BASE_URL}/account/${id}`, {
     credentials: "include",
     headers: { "Content-Type": "application/json" },
   });
@@ -84,7 +79,7 @@ export async function createAccount(data) {
 // (PUT is the other option: it replaces the whole record, so you
 // have to send every field.)
 export async function updateAccount(id, data) {
-  const res = await fetch(`${BASE_URL}/accounts/${id}`, {
+  const res = await fetch(`${BASE_URL}/account/${id}`, {
     method: "PATCH",
     credentials: "include",
     headers: { "Content-Type": "application/json" },

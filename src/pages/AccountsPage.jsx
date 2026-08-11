@@ -73,31 +73,25 @@ export default function AccountsPage() {
       {/* Add-an-account form */}
       <form onSubmit={handleCreate} className="mb-6 flex gap-2">
         <input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder='New account title…'
-          className='flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2'
-        />
-        <input
-          value={account.name}
+          value={account.name ?? ""}
           onChange={(e) => setAccount({ ...account, name: e.target.value })}
           placeholder="Name"
           className="flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2"
         />
         <input
-          value={account.type}
+          value={account.type ?? ""}
           onChange={(e) => setAccount({ ...account, type: e.target.value })}
           placeholder="Type"
           className="flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2"
         />
         <input
-          value={account.balance}
+          value={account.balance ?? ""}
           onChange={(e) => setAccount({ ...account, balance: e.target.value })}
           placeholder="Balance"
           className="flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2"
         />
         <input
-          value={account.bank_name}
+          value={account.bank_name ?? ""}
           onChange={(e) =>
             setAccount({ ...account, bank_name: e.target.value })
           }
