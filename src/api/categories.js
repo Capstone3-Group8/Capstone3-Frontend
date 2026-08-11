@@ -17,9 +17,9 @@
 // your deployed backend URL. Vite only exposes env vars starting with VITE_.
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
-// READ ALL — GET /api/categories. Returns an array of categories.
+// READ ALL — GET /categories. Returns an array of categories.
 export async function getCategories() {
-  const res = await fetch(`${BASE_URL}/api/categories`, {
+  const res = await fetch(`${BASE_URL}/categories`, {
     // Send our login cookie along. Off by default in fetch, and needed the
     // moment an endpoint requires you to be logged in.
     credentials: "include",
@@ -40,9 +40,9 @@ export async function getCategories() {
   return res.json();
 }
 
-// READ ONE — GET /api/categories/:id. Returns a single category, or throws on 404.
+// READ ONE — GET /categories/:id. Returns a single category, or throws on 404.
 export async function getCategory(id) {
-  const res = await fetch(`${BASE_URL}/api/categories/${id}`, {
+  const res = await fetch(`${BASE_URL}/categories/${id}`, {
     credentials: "include",
     headers: { "Content-Type": "application/json" },
   });
@@ -57,12 +57,12 @@ export async function getCategory(id) {
   return res.json();
 }
 
-// CREATE — POST /api/categories. Returns the category the server created (with its new
+// CREATE — POST /categories. Returns the category the server created (with its new
 // id and timestamps), which is why we use the response instead of the object
 // we sent.
 // data = { name, budget }
 export async function createCategory(data) {
-  const res = await fetch(`${BASE_URL}/api/categories`, {
+  const res = await fetch(`${BASE_URL}/categories`, {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -79,12 +79,12 @@ export async function createCategory(data) {
   return res.json();
 }
 
-// UPDATE — PATCH /api/categories/:id. Returns the updated category.
+// UPDATE — PATCH /categories/:id. Returns the updated category.
 // PATCH changes only the fields you send
 // (PUT is the other option: it replaces the whole record, so you
 // have to send every field.)
 export async function updateCategory(id, data) {
-  const res = await fetch(`${BASE_URL}/api/categories/${id}`, {
+  const res = await fetch(`${BASE_URL}/categories/${id}`, {
     method: "PATCH",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -101,9 +101,9 @@ export async function updateCategory(id, data) {
   return res.json();
 }
 
-// DELETE — DELETE /api/categories/:id.
+// DELETE — DELETE /categories/:id.
 export async function deleteCategory(id) {
-  const res = await fetch(`${BASE_URL}/api/categories/${id}`, {
+  const res = await fetch(`${BASE_URL}/categories/${id}`, {
     method: "DELETE",
     credentials: "include",
     headers: { "Content-Type": "application/json" },

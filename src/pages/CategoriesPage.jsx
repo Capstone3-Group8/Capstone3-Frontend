@@ -5,7 +5,7 @@ import {
   createCategory,
   updateCategory,
   deleteCategory,
-} from "../api/categories";
+} from "../categories";
 
 // This page shows the full CRUD loop against the backend:
 // read the list, create a category, and delete it.
