@@ -15,6 +15,12 @@ export default function HomePage() {
           View Accounts →
         </Link>
         <Link
+          to="/transactions"
+          className="inline-block rounded-md bg-(--accent) px-5 py-2.5 font-medium text-white hover:bg-(--accent-border)"
+        >
+          View Transactions →
+        </Link>
+        <Link
           to="/protected"
           className="inline-block rounded-md border border-(--border) px-5 py-2.5 font-medium hover:text-(--text-h)"
         >
