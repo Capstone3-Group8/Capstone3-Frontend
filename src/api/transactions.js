@@ -19,7 +19,7 @@ const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 // READ ALL — GET /api/account. Returns an array of accounts.
 export async function getTransactions() {
-  const res = await fetch(`${BASE_URL}/transactions`, {
+  const res = await fetch(`${BASE_URL}/transaction`, {
     // Send our login cookie along. Off by default in fetch, and needed the
     // moment an endpoint requires you to be logged in.
     credentials: "include",
@@ -32,7 +32,9 @@ export async function getTransactions() {
   if (!res.ok) {
     // Our backend sends errors as { error: "..." }. Fall back if it didn't.
     const body = await res.json().catch(() => ({}));
-    throw new Error(body.error || `Could not load transactions (${res.status})`);
+    throw new Error(
+      body.error || `Could not load transactions (${res.status})`,
+    );
   }
 
   // res.json() reads the response body and parses it. It's async too — the
@@ -73,7 +75,9 @@ export async function createTransaction(data) {
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    throw new Error(body.error || `Could not create transaction (${res.status})`);
+    throw new Error(
+      body.error || `Could not create transaction (${res.status})`,
+    );
   }
 
   return res.json();
