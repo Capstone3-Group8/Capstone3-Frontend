@@ -29,6 +29,9 @@ export default function Navbar({ user, onLogout }) {
         <NavLink to='/transactions' className={linkClass}>
           Transactions
         </NavLink>
+        <NavLink to='/categories' className={linkClass}>
+          Categories
+        </NavLink>
         {/* Only show the protected link once someone is logged in. */}
         {user && (
           <NavLink to='/protected' className={linkClass}>

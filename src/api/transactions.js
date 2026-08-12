@@ -23,7 +23,11 @@ export async function getTransactions() {
     // Send our login cookie along. Off by default in fetch, and needed the
     // moment an endpoint requires you to be logged in.
     credentials: "include",
-    headers: { "Content-Type": "application/json" },
+    headers: { 
+        "Content-Type": "application/json",
+         Authorization: `Bearer`,
+     },
+   
   });
 
   // fetch only rejects on a NETWORK failure (server down, DNS, CORS). A 404 or

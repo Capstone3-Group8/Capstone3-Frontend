@@ -18,12 +18,15 @@
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 // READ ALL — GET /categories. Returns an array of categories.
+// Send our login cookie along. Off by default in fetch, and needed the
+// moment an endpoint requires you to be logged in.
 export async function getCategories() {
   const res = await fetch(`${BASE_URL}/categories`, {
-    // Send our login cookie along. Off by default in fetch, and needed the
-    // moment an endpoint requires you to be logged in.
     credentials: "include",
-    headers: { "Content-Type": "application/json" },
+    headers: { 
+      "Content-Type": "application/json",
+      Authorization: `Bearer`,
+     },
   });
 
   // fetch only rejects on a NETWORK failure (server down, DNS, CORS). A 404 or

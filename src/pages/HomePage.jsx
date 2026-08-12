@@ -20,6 +20,12 @@ export default function HomePage() {
         >
           View Transactions →
         </Link>
+         <Link
+          to="/categories"
+          className="inline-block rounded-md bg-(--accent) px-5 py-2.5 font-medium text-white hover:bg-(--accent-border)"
+        >
+          View Categories →
+        </Link>
         <Link
           to="/protected"
           className="inline-block rounded-md border border-(--border) px-5 py-2.5 font-medium hover:text-(--text-h)"

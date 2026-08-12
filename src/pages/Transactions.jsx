@@ -45,8 +45,8 @@ export default function TransactionsPage() {
         date: transaction.date,
         description: transaction.description,
       });
-
-      setTransactions((current) => [newTransaction, ...current]);
+      setTransactions([newTransaction, ...transactions]);
+      setTitle('');
       setTransaction({
         user_id: "",
         account_id: "",
@@ -74,7 +74,7 @@ export default function TransactionsPage() {
   if (loading) return <p>Loading transactions…</p>;
 
   return (
-    <section>
+      <section>
       <h1 className="mb-6 text-3xl font-semibold text-(--text-h)">Transactions</h1>
 
       {error && (
@@ -149,6 +149,7 @@ export default function TransactionsPage() {
               <Link to={`/transactions/${item.id}`} className="flex-1">
                 {item.description} — {item.type} — ${Number(item.amount).toFixed(2)}
               </Link>
+
               <button
                 onClick={() => handleDelete(item.id)}
                 className="text-sm text-red-500 hover:underline"

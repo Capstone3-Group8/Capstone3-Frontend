@@ -7,8 +7,11 @@ import HomePage from './pages/HomePage';
 import AccountsPage from './pages/AccountsPage';
 import TransactionsPage from './pages/Transactions';
 import TransactionDetailPage from './pages/TransactionsDetails';
-// import CategoriesPage from './pages/CategoriesPage';
+import CategoryPage from './pages/CategoriesPage';
 import AccountDetailPage from './pages/AccountDetailPage';
+// import TransactionsPage from './pages/Transactions';
+import CategoryDetailPage from './pages/CategoriesDetailsPage';
+// import TransactionDetailPage from './pages/TransactionsDetails';
 import NotFoundPage from './pages/NotFoundPage';
 import ProtectedPage from './pages/ProtectedPage';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -146,11 +149,11 @@ function App() {
             They get setUser so they can report a successful login back up. */}
         <Route path='/login' element={<Login setUser={setUser} />} />
         <Route path='/signup' element={<Signup setUser={setUser} />} />
-
-        {/* <Route path='/categories' element={<CategoriesPage />} /> */}
+        <Route path='/categories' element={<CategoryPage />} />
+        <Route path='/categories/:id' element={<CategoryDetailPage />} />
         <Route path='/accounts' element={<AccountsPage />} />
         <Route path='/accounts/:id' element={<AccountDetailPage />} />
-        <Route path='/transactions' element={<TransactionsPage />} />
+        <Route path='/transactions' element={<TransactionsPage/>} />
         <Route path='/transactions/:id' element={<TransactionDetailPage />} />
 
         {/* Only reachable when logged in — ProtectedRoute redirects otherwise. */}
