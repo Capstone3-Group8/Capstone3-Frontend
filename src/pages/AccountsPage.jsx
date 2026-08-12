@@ -63,7 +63,7 @@ export default function AccountsPage() {
       )}
 
       {/* Add-an-account form */}
-      <form onSubmit={handleCreate} className="mb-6 flex gap-2">
+      <form onSubmit={handleCreate} className="mx-auto max-w-3xl">
         <input
           value={account.name}
           onChange={(e) => setAccount({ ...account, name: e.target.value })}

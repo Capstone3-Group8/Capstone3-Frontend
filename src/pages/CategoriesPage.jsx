@@ -37,6 +37,7 @@ export default function CategoryPage() {
       });
       setCategories([newCategory, ...categories]);
       setCategory({ name: "", type: "", budget: "" });
+      setError(null);
     } catch (err) {
       setError(err.message);
     }
