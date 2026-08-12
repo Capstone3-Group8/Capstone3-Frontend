@@ -19,7 +19,7 @@ export default function TransactionDetailPage() {
     }, [id]);
 
     if (error) return <p className='text-red-500'>{error}</p>;
-    if (!account) return <p>Loading...</p> //loading 
+    if (!transaction) return <p>Loading...</p> //loading 
 
     return (
         <section>

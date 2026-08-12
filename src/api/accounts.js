@@ -18,12 +18,12 @@
 const BASE_URL = /*import.meta.env.VITE_API_URL ||*/ "http://localhost:8080";
 
 // READ ALL — GET /api/account. Returns an array of accounts.
-export async function getAccounts(token) {
+export async function getAccounts() {
   const res = await fetch(`${BASE_URL}/accounts`, {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer`,
     },
   });
 

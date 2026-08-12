@@ -18,12 +18,16 @@
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 // READ ALL — GET /api/account. Returns an array of accounts.
-export async function getTransactions() {
-  const res = await fetch(`${BASE_URL}/transaction`, {
+export async function getTransactions(token) {
+  const res = await fetch(`${BASE_URL}/transactions`, {
     // Send our login cookie along. Off by default in fetch, and needed the
     // moment an endpoint requires you to be logged in.
     credentials: "include",
-    headers: { "Content-Type": "application/json" },
+    headers: { 
+        "Content-Type": "application/json",
+         Authorization: `Bearer ${token}`,
+     },
+   
   });
 
   // fetch only rejects on a NETWORK failure (server down, DNS, CORS). A 404 or
