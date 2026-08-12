@@ -10,7 +10,7 @@ export default function CategoryDetailPage() {
 
     useEffect(() => {
         let isActive = true;
-        getCategories(id)
+        getCategory(id)
         .then((data) => isActive && setCategory(data))
         .catch((err) => isActive && setError(err.message));
         return () => {

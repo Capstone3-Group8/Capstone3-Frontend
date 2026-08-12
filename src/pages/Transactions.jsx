@@ -45,8 +45,8 @@ export default function TransactionsPage() {
         date: transaction.date,
         description: transaction.description,
       });
-
-      setTransactions((current) => [newTransaction, ...current]);
+      setTransactions([newTransaction, ...transactions]);
+      setTitle('');
       setTransaction({
         user_id: "",
         account_id: "",
@@ -83,35 +83,6 @@ export default function TransactionsPage() {
         </p>
       )}
 
-<<<<<<< HEAD
-      {/* Add-an-account form */}
-      <form onSubmit={handleCreate} className="mb-6 flex gap-2">
-        <input
-          value={transaction.amount}
-          onChange={(e) => setTransaction({ ...transaction, name: e.target.value })}
-          placeholder="Name"
-          className="flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2"
-        />
-        <input
-          value={transaction.type}
-          onChange={(e) => setAccount({ ...transaction, type: e.target.value })}
-          placeholder="Type"
-          className="flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2"
-        />
-        <input
-          value={transaction.date}
-          onChange={(e) => setAccount({ ...transaction, date: e.target.value })}
-          placeholder="Balance"
-          className="flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2"
-        />
-        <input
-          value={transaction.description}
-          onChange={(e) =>
-            setAccount({ ...transaction, description: e.target.value })
-          }
-          placeholder="Bank Name"
-          className="flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2"
-=======
       <form onSubmit={handleCreate} className="mb-6 grid gap-3 md:grid-cols-2">
         <input
           value={transaction.user_id}
@@ -157,7 +128,6 @@ export default function TransactionsPage() {
           onChange={(e) => setTransaction({ ...transaction, description: e.target.value })}
           placeholder="Description"
           className="rounded-md border border-(--border) bg-transparent px-3 py-2 md:col-span-2"
->>>>>>> 5fdb433ee5401888632650e1fc1ffbd99a252bfc
         />
         <button
           type="submit"
@@ -167,38 +137,21 @@ export default function TransactionsPage() {
         </button>
       </form>
 
-<<<<<<< HEAD
-      {/* Empty state vs. the list */}
-=======
->>>>>>> 5fdb433ee5401888632650e1fc1ffbd99a252bfc
       {transactions.length === 0 ? (
         <p>No transactions yet. Add one above.</p>
       ) : (
         <ul className="flex flex-col gap-2">
-<<<<<<< HEAD
-          {transactions.map((transaction) => (
-=======
           {transactions.map((item) => (
->>>>>>> 5fdb433ee5401888632650e1fc1ffbd99a252bfc
             <li
               key={item.id}
               className="flex items-center gap-3 rounded-md border border-(--border) px-4 py-3"
             >
-<<<<<<< HEAD
-              <Link to={`/transactions/${transaction.id}`} className="flex-1">
-                {transaction.amount} — {transaction.type} — ${transaction.date} - {transaction.description}
-=======
               <Link to={`/transactions/${item.id}`} className="flex-1">
                 {item.description} — {item.type} — ${Number(item.amount).toFixed(2)}
->>>>>>> 5fdb433ee5401888632650e1fc1ffbd99a252bfc
               </Link>
 
               <button
-<<<<<<< HEAD
-                onClick={() => handleDelete(account.id)}
-=======
                 onClick={() => handleDelete(item.id)}
->>>>>>> 5fdb433ee5401888632650e1fc1ffbd99a252bfc
                 className="text-sm text-red-500 hover:underline"
               >
                 Delete
