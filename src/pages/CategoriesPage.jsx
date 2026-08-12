@@ -5,18 +5,17 @@ import {
   createCategory,
   updateCategory,
   deleteCategory,
-} from "../categories";
+} from "../api/categories";
 
 // This page shows the full CRUD loop against the backend:
 // read the list, create a category, and delete it.
-export default function CategoriesPage() {
+export default function CategoryPage() {
   const [category, setCategory] = useState({
     name: "",
     type: "",
     budget: "",
   });
   const [categories, setCategories] = useState([]);
-  const [editingId, seteditingId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -24,8 +23,7 @@ export default function CategoriesPage() {
   useEffect(() => {
     getCategories()
       .then(setCategories)
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
+      setLoading(false);
   }, []);
 
   // Create a category on the server, then add the returned row to the list on screen.
@@ -53,24 +51,6 @@ export default function CategoriesPage() {
             setError(error.message);
         }
     }
-
-    async function handleEdit(e){
-        e.preventDefault();
-
-        try{
-            const updated = await updateCategory(editingId, {
-                name: category.name,
-                type: category.type,
-                budget: category.budget,
-            });
-
-            setCategories(categories.map((c) => (c.id === editingId ? updated : c)));
-            seteditingId(null);
-            setCategory({ name: "", type: "", budget: ""});
-        }catch(err){
-            setError(err.message);
-        }
-    }
     
     if (loading) return <p>Loading categories…</p>;
 
@@ -86,7 +66,7 @@ export default function CategoriesPage() {
       )}
 
       {/* Add-an-account form */}
-      <form onSubmit={editingId ? handleEdit : handleCreate} className="mb-6 flex gap-2">
+      <form onSubmit={handleCreate} className="mb-6 flex gap-2">
         <input
           value={category.name}
           onChange={(e) => setCategory({ ...category, name: e.target.value })}
@@ -109,11 +89,11 @@ export default function CategoriesPage() {
           type="submit"
           className="rounded-md bg-(--accent) px-4 py-2 font-medium text-white"
         >
-          {editingId ? "Save Changes" : "Add"}
+          Add
         </button>
       </form>
 
-      {/* Empty state vs. the list */}
+            {/* Empty state vs. the list */}
       {categories.length === 0 ? (
         <p>No categories yet. Add one above.</p>
       ) : (
@@ -124,18 +104,9 @@ export default function CategoriesPage() {
               className="flex items-center gap-3 rounded-md border border-(--border) px-4 py-3"
             >
               <Link to={`/categories/${category.id}`} className="flex-1">
-                {category.name} — ${category.type} — {category.budget}
+                {category.name} — {category.type} — ${category.budget}
               </Link>
 
-               <button 
-               onClick={() => {setEditingId(category.id);
-                                setCategory({
-                                    name: category.name,
-                                    type: category.type,
-                                    budget: category.budget,});  
-               }}
-               className="text-sm text-blue-500 hover:underline"
-               >Edit</button> 
               <button
                 onClick={() => handleDelete(category.id)}
                 className="text-sm text-red-500 hover:underline"
@@ -146,6 +117,7 @@ export default function CategoriesPage() {
           ))}
         </ul>
       )}
+
     </section>
   );
 }

@@ -5,7 +5,7 @@ import {
   createTransaction,
   updateTransaction,
   deleteTransaction,
-} from "../api/tasks";
+} from "../api/transactions";
 
 // This page shows the full CRUD loop against the backend:
 // read the list, create a task, toggle it done, and delete it.
@@ -73,7 +73,7 @@ export default function TransactionsPage() {
   if (loading) return <p>Loading transactions…</p>;
 
   return (
-    <section>
+      <section>
       <h1 className="mb-6 text-3xl font-semibold text-(--text-h)">Transactions</h1>
 
       {/* Show any error instead of failing silently. */}
@@ -83,38 +83,24 @@ export default function TransactionsPage() {
         </p>
       )}
 
-      {/* Add-a-transaction form */}
+      {/* Add-an-account form */}
       <form onSubmit={handleCreate} className="mb-6 flex gap-2">
         <input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder='New task title…'
-          className='flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2'
-        />
-        <input
-          value={transaction.account_id}
-          onChange={(e) => setTransaction({ ...transaction, account_id: e.target.value })}
-          placeholder="Account Id#"
-          className="flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2"
-        />
-        <input
-          value={transaction.category_id}
-          onChange={(e) => setAccount({ ...transaction, category_id: e.target.value })}
-          placeholder="Category_id"
+          value={transaction.amount}
+          onChange={(e) => setTransaction({ ...transaction, name: e.target.value })}
+          placeholder="Name"
           className="flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2"
         />
         <input
           value={transaction.type}
-          onChange={(e) => setTransaction({ ...transaction, type: e.target.value })}
+          onChange={(e) => setAccount({ ...transaction, type: e.target.value })}
           placeholder="Type"
           className="flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2"
         />
         <input
           value={transaction.date}
-          onChange={(e) =>
-            setAccount({ ...transaction, date: e.target.value })
-          }
-          placeholder="Date"
+          onChange={(e) => setAccount({ ...transaction, date: e.target.value })}
+          placeholder="Balance"
           className="flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2"
         />
         <input
@@ -122,7 +108,7 @@ export default function TransactionsPage() {
           onChange={(e) =>
             setAccount({ ...transaction, description: e.target.value })
           }
-          placeholder="Description"
+          placeholder="Bank Name"
           className="flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2"
         />
         <button
@@ -134,24 +120,21 @@ export default function TransactionsPage() {
       </form>
 
       {/* Empty state vs. the list */}
-      {tasks.length === 0 ? (
-        <p>No tasks yet. Add one above.</p>
+      {transactions.length === 0 ? (
+        <p>No transactions yet. Add one above.</p>
       ) : (
         <ul className="flex flex-col gap-2">
-          {tasks.map((transaction) => (
+          {transactions.map((transaction) => (
             <li
               key={transaction.id}
               className="flex items-center gap-3 rounded-md border border-(--border) px-4 py-3"
             >
-              {/* Click the title to open the detail page for that transaction. */}
-              <Link
-                to={`/transactions/${transaction.id}`}
-                className="flex-1 line-through opacity-60" 
-              >
-                {transaction.title}
+              <Link to={`/transactions/${transaction.id}`} className="flex-1">
+                {transaction.amount} — {transaction.type} — ${transaction.date} - {transaction.description}
               </Link>
+
               <button
-                onClick={() => handleDelete(transaction.id)}
+                onClick={() => handleDelete(account.id)}
                 className="text-sm text-red-500 hover:underline"
               >
                 Delete

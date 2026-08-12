@@ -49,11 +49,6 @@ export default function AccountsPage() {
     }
   }
 
-  async function handleEdit(e){
-    e.preventDefault();
-     if (!title.trim()) return;
-  }
-
   if (loading) return <p>Loading accounts…</p>;
 
   return (
