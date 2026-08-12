@@ -5,6 +5,8 @@ import { useAuth0 } from '@auth0/auth0-react';
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
 import AccountsPage from './pages/AccountsPage';
+import TransactionsPage from './pages/Transactions';
+import TransactionDetailPage from './pages/TransactionsDetails';
 // import CategoriesPage from './pages/CategoriesPage';
 import AccountDetailPage from './pages/AccountDetailPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -148,6 +150,8 @@ function App() {
         {/* <Route path='/categories' element={<CategoriesPage />} /> */}
         <Route path='/accounts' element={<AccountsPage />} />
         <Route path='/accounts/:id' element={<AccountDetailPage />} />
+        <Route path='/transactions' element={<TransactionsPage />} />
+        <Route path='/transactions/:id' element={<TransactionDetailPage />} />
 
         {/* Only reachable when logged in — ProtectedRoute redirects otherwise. */}
         <Route

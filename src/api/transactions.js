@@ -17,9 +17,9 @@
 // your deployed backend URL. Vite only exposes env vars starting with VITE_.
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
-// READ ALL — GET /api/account. Returns an array of accounts.
+// READ ALL — GET /api/transactions. Returns an array of transactions.
 export async function getTransactions() {
-  const res = await fetch(`${BASE_URL}/transaction`, {
+  const res = await fetch(`${BASE_URL}/transactions`, {
     // Send our login cookie along. Off by default in fetch, and needed the
     // moment an endpoint requires you to be logged in.
     credentials: "include",
