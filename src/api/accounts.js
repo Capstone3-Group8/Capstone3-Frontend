@@ -37,7 +37,7 @@ export async function getAccounts() {
 
 // READ ONE — GET /api/accounts/:id. Returns a single account, or throws on 404.
 export async function getAccount(id) {
-  const res = await fetch(`${BASE_URL}/account/${id}`, {
+  const res = await fetch(`${BASE_URL}/accounts/${id}`, {
     credentials: "include",
     headers: { "Content-Type": "application/json" },
   });
@@ -79,7 +79,7 @@ export async function createAccount(data) {
 // (PUT is the other option: it replaces the whole record, so you
 // have to send every field.)
 export async function updateAccount(id, data) {
-  const res = await fetch(`${BASE_URL}/account/${id}`, {
+  const res = await fetch(`${BASE_URL}/accounts/${id}`, {
     method: "PATCH",
     credentials: "include",
     headers: { "Content-Type": "application/json" },

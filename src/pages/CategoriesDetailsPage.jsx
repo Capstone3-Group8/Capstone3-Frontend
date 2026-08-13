@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from 'react-router';
-import { getCategories } from "../api/categories";
+import { getCategory } from "../api/categories";
 
 export default function CategoryDetailPage() {
     const { id } = useParams();

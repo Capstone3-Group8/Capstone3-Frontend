@@ -3,26 +3,31 @@ import { NavLink } from 'react-router';
 // NavLink is like an <a> tag but for client-side routing: it navigates without
 // a full page reload, and it tells us when its route is active so we can style it.
 //
-// Navbar takes `user` and `onLogout` as props from App. It doesn't fetch
+// Sidebar takes `user` and `onLogout` as props from App. It doesn't fetch
 // anything or know how you logged in — it just renders what it's handed. A
 // component this simple is easy to reason about and easy to reuse.
-export default function Navbar({ user, onLogout }) {
+export default function Sidebar({ user, onLogout }) {
   const linkClass = ({ isActive }) =>
-    `px-3 py-2 rounded-md text-sm font-medium ${
-      isActive ? 'text-(--accent)' : 'hover:text-(--text-h)'
+    `rounded-md px-3 py-2 text-sm font-medium ${
+      isActive
+        ? 'bg-(--accent-bg) text-(--accent)'
+        : 'hover:bg-(--accent-bg) hover:text-(--text-h)'
     }`;
 
   return (
-    <header className='border-b border-(--border)'>
-      <nav className='mx-auto flex max-w-3xl items-center gap-2 px-4 py-3'>
-        <NavLink
-          to='/'
-          className='mr-auto text-lg font-semibold text-(--text-h)'
-        >
-          Home
-        </NavLink>
+    <aside className='flex h-screen w-56 shrink-0 flex-col border-r border-(--border) px-3 py-4'>
+      <NavLink
+        to='/'
+        end
+        className='mb-4 px-3 text-lg font-semibold text-(--text-h)'
+      >
+        Home
+      </NavLink>
 
-        {/* `end` makes "Home" active only on "/" exactly, not on every route. */}
+      <nav className='flex flex-1 flex-col gap-1'>
+        <NavLink to="/dashboard" className={linkClass}>
+          Reports
+        </NavLink>
         <NavLink to='/accounts' className={linkClass}>
           Accounts
         </NavLink>
@@ -38,18 +43,20 @@ export default function Navbar({ user, onLogout }) {
             Protected
           </NavLink>
         )}
+      </nav>
 
-        {/* Auth controls: your name + Log out, or the Log in / Sign up pair. */}
+      {/* Auth controls: your name + Log out, or the Log in / Sign up pair. */}
+      <div className='flex flex-col gap-1 border-t border-(--border) pt-3'>
         {user ? (
           <>
-            <span className='px-2 text-sm'>
+            <span className='truncate px-3 text-sm'>
               {/* Our own users always have a username; Auth0 users may also
                   have a name or email worth falling back to. */}
               {user.username || user.name || user.email}
             </span>
             <button
               onClick={onLogout}
-              className='rounded-md px-3 py-2 text-sm font-medium hover:text-(--text-h)'
+              className='rounded-md px-3 py-2 text-left text-sm font-medium hover:bg-(--accent-bg) hover:text-(--text-h)'
             >
               Log out
             </button>
@@ -61,13 +68,13 @@ export default function Navbar({ user, onLogout }) {
             </NavLink>
             <NavLink
               to='/signup'
-              className='rounded-md bg-(--accent) px-3 py-2 text-sm font-medium text-white'
+              className='rounded-md bg-(--accent) px-3 py-2 text-center text-sm font-medium text-white'
             >
               Sign up
             </NavLink>
           </>
         )}
-      </nav>
-    </header>
+      </div>
+    </aside>
   );
 }

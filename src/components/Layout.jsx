@@ -1,16 +1,16 @@
 import { Outlet } from 'react-router';
-import Navbar from './Navbar';
+import Sidebar from './Sidebar';
 
-// Layout is the frame every page shares: navbar on top, page below.
-// <Outlet /> is the slot where the matched child route renders.
+// Layout is the frame every page shares: sidebar on the left, page on the
+// right. <Outlet /> is the slot where the matched child route renders.
 //
-// It takes user and onLogout only to hand them straight down to Navbar. App
+// It takes user and onLogout only to hand them straight down to Sidebar. App
 // owns that state; Layout just happens to sit in between. authError is shown
 // here rather than on one page, because a broken login affects all of them.
 export default function Layout({ user, onLogout, authError }) {
   return (
-    <div className='flex min-h-screen flex-col text-left'>
-      <Navbar user={user} onLogout={onLogout} />
+    <div className='flex min-h-screen text-left'>
+      <Sidebar user={user} onLogout={onLogout} />
       <main className='mx-auto w-full max-w-3xl flex-1 px-4 py-8'>
         {authError && (
           <p

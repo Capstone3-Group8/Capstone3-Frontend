@@ -58,11 +58,10 @@ export default function TransactionsPage() {
         date: form.date,
         description: form.description,
       });
-
-      setTransactions([...transactions, newTx]);
-
-      // Reset form
-      setForm({
+      setTransactions([newTransaction, ...transactions]);
+      // setTitle('');
+      setTransaction({
+        user_id: "",
         account_id: "",
         category_id: "",
         amount: "",

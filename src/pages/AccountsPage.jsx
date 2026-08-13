@@ -19,7 +19,8 @@ export default function AccountsPage() {
   useEffect(() => {
     getAccounts()
       .then(setAccounts)
-      setLoading(false);
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
   }, []);
 
   // Create an account on the server, then add the returned row to the list on screen.
@@ -63,7 +64,10 @@ export default function AccountsPage() {
       )}
 
       {/* Add-an-account form */}
-      <form onSubmit={handleCreate} className="mx-auto max-w-3xl">
+      <form 
+        onSubmit={handleCreate} 
+        className="mb-6 grid grid-cols-1 gap-2 sm:grid-cols-2"
+      >
         <input
           value={account.name}
           onChange={(e) => setAccount({ ...account, name: e.target.value })}
@@ -92,7 +96,7 @@ export default function AccountsPage() {
         />
         <button
           type="submit"
-          className="rounded-md bg-(--accent) px-4 py-2 font-medium text-white"
+          className="rounded-md bg-(--accent) px-4 py-2 font-medium text-white sm:col-span-2"
         >
           Add
         </button>

@@ -25,7 +25,7 @@ export async function getCategories() {
     credentials: "include",
     headers: { 
       "Content-Type": "application/json",
-      Authorization: `Bearer`,
+      // Authorization: `Bearer`,
      },
   });
 
