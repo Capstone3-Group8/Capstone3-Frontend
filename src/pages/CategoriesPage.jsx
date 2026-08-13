@@ -73,12 +73,15 @@ export default function CategoryPage() {
           placeholder="Name"
           className="flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2"
         />
-        <input
+        <select
           value={category.type}
           onChange={(e) => setCategory({ ...category, type: e.target.value })}
-          placeholder="Type"
-          className="flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2"
-        />
+          className="flex-1 rounded-md border border-(--border) bg-(--bg) px-3 py-2"
+        >
+          <option value="">Select type</option>
+          <option value="income">Income</option>
+          <option value="expense">Expense</option>
+        </select>
         <input
           value={category.budget}
           onChange={(e) => setCategory({ ...category, budget: e.target.value })}

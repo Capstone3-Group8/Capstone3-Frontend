@@ -46,7 +46,7 @@ export default function TransactionsPage() {
         description: transaction.description,
       });
       setTransactions([newTransaction, ...transactions]);
-      setTitle('');
+      // setTitle('');
       setTransaction({
         user_id: "",
         account_id: "",

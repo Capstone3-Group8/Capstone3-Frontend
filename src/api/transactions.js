@@ -25,7 +25,7 @@ export async function getTransactions() {
     credentials: "include",
     headers: { 
         "Content-Type": "application/json",
-         Authorization: `Bearer`,
+        //  Authorization: `Bearer`,
      },
    
   });
