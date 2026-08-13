@@ -1,5 +1,5 @@
-import{ useEffect, useState } from "react";
-import{ getTransactions } from "../api/transactions";
+import { useEffect, useState } from "react";
+import { getTransactions } from "../api/transactions";
 import { getCategories } from "../api/categories";
 import CashFlowChart from "../components/CashFlowChart";
 import ExpensesByCategoryChart from "../components/ExpensesByCategoryChart";
