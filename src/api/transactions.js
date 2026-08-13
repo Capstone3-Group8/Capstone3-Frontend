@@ -1,4 +1,4 @@
-// api/categories.js — every call for the "categories" resource.
+// api/accounts.js — every call for the "accounts" resource.
 // Copy this file for your own resources (posts, events, ...) and swap the paths.
 //
 // Each function is written out in full — one fetch, one error check, one return
@@ -7,26 +7,27 @@
 // the URL, the method, and whether there's a body.
 //
 // This is CRUD, the five things you do with data:
-//   Create  ->  POST    /api/categories         createCategory
-//   Read    ->  GET     /api/categories         getCategories    (all)
-//               GET     /api/categories/:id     getCategory     (one)
-//   Update  ->  PATCH   /api/categories/:id     updateCategory
-//   Delete  ->  DELETE  /api/categories/:id     deleteCategory
+//   Create  ->  POST    /api/accounts         createAccount
+//   Read    ->  GET     /api/accounts         getAccounts    (all)
+//               GET     /api/accounts/:id     getAccount     (one)
+//   Update  ->  PATCH   /api/accounts/:id     updateAccount
+//   Delete  ->  DELETE  /api/accounts/:id     deleteAccount
 
 // In dev this is your local Express server. In production, set VITE_API_URL to
 // your deployed backend URL. Vite only exposes env vars starting with VITE_.
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
-// READ ALL — GET /categories. Returns an array of categories.
-// Send our login cookie along. Off by default in fetch, and needed the
-// moment an endpoint requires you to be logged in.
-export async function getCategories() {
-  const res = await fetch(`${BASE_URL}/categories`, {
+// READ ALL — GET /api/transactions. Returns an array of transactions.
+export async function getTransactions() {
+  const res = await fetch(`${BASE_URL}/transactions`, {
+    // Send our login cookie along. Off by default in fetch, and needed the
+    // moment an endpoint requires you to be logged in.
     credentials: "include",
     headers: { 
-      "Content-Type": "application/json",
-      // Authorization: `Bearer`,
+        "Content-Type": "application/json",
+        //  Authorization: `Bearer`,
      },
+   
   });
 
   // fetch only rejects on a NETWORK failure (server down, DNS, CORS). A 404 or
@@ -35,7 +36,9 @@ export async function getCategories() {
   if (!res.ok) {
     // Our backend sends errors as { error: "..." }. Fall back if it didn't.
     const body = await res.json().catch(() => ({}));
-    throw new Error(body.error || `Could not load categories (${res.status})`);
+    throw new Error(
+      body.error || `Could not load transactions (${res.status})`,
+    );
   }
 
   // res.json() reads the response body and parses it. It's async too — the
@@ -43,9 +46,9 @@ export async function getCategories() {
   return res.json();
 }
 
-// READ ONE — GET /categories/:id. Returns a single category, or throws on 404.
-export async function getCategory(id) {
-  const res = await fetch(`${BASE_URL}/categories/${id}`, {
+// READ ONE — GET /api/accounts/:id. Returns a single account, or throws on 404.
+export async function getTransaction(id) {
+  const res = await fetch(`${BASE_URL}/transactions/${id}`, {
     credentials: "include",
     headers: { "Content-Type": "application/json" },
   });
@@ -53,19 +56,19 @@ export async function getCategory(id) {
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
     throw new Error(
-      body.error || `Could not load category ${id} (${res.status})`,
+      body.error || `Could not load transaction ${id} (${res.status})`,
     );
   }
 
   return res.json();
 }
 
-// CREATE — POST /categories. Returns the category the server created (with its new
+// CREATE — POST /api/accounts. Returns the account the server created (with its new
 // id and timestamps), which is why we use the response instead of the object
 // we sent.
-// data = { name, budget }
-export async function createCategory(data) {
-  const res = await fetch(`${BASE_URL}/categories`, {
+// data = { name, type, balance, bank_name }
+export async function createTransaction(data) {
+  const res = await fetch(`${BASE_URL}/transactions`, {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -76,18 +79,20 @@ export async function createCategory(data) {
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    throw new Error(body.error || `Could not create category (${res.status})`);
+    throw new Error(
+      body.error || `Could not create transaction (${res.status})`,
+    );
   }
 
   return res.json();
 }
 
-// UPDATE — PATCH /categories/:id. Returns the updated category.
+// UPDATE — PATCH /api/accounts/:id. Returns the updated account.
 // PATCH changes only the fields you send
 // (PUT is the other option: it replaces the whole record, so you
 // have to send every field.)
-export async function updateCategory(id, data) {
-  const res = await fetch(`${BASE_URL}/categories/${id}`, {
+export async function updateTransaction(id, data) {
+  const res = await fetch(`${BASE_URL}/transactions/${id}`, {
     method: "PATCH",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -97,16 +102,16 @@ export async function updateCategory(id, data) {
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
     throw new Error(
-      body.error || `Could not update category ${id} (${res.status})`,
+      body.error || `Could not update transaction ${id} (${res.status})`,
     );
   }
 
   return res.json();
 }
 
-// DELETE — DELETE /categories/:id.
-export async function deleteCategory(id) {
-  const res = await fetch(`${BASE_URL}/categories/${id}`, {
+// DELETE — DELETE /api/accounts/:id.
+export async function deleteTransaction(id) {
+  const res = await fetch(`${BASE_URL}/transactions/${id}`, {
     method: "DELETE",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -115,7 +120,7 @@ export async function deleteCategory(id) {
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
     throw new Error(
-      body.error || `Could not delete category ${id} (${res.status})`,
+      body.error || `Could not delete transaction ${id} (${res.status})`,
     );
   }
 

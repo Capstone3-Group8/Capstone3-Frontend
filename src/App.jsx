@@ -1,12 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router';
 import { useAuth0 } from '@auth0/auth0-react';
+import DashboardPage from "./pages/DashboardPage";
 
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
 import AccountsPage from './pages/AccountsPage';
-// import CategoriesPage from './pages/CategoriesPage';
+import TransactionsPage from './pages/Transactions';
+import TransactionDetailPage from './pages/TransactionsDetails';
+import CategoryPage from './pages/CategoriesPage';
 import AccountDetailPage from './pages/AccountDetailPage';
+// import TransactionsPage from './pages/Transactions';
+import CategoryDetailPage from './pages/CategoriesDetailsPage';
+// import TransactionDetailPage from './pages/TransactionsDetails';
 import NotFoundPage from './pages/NotFoundPage';
 import ProtectedPage from './pages/ProtectedPage';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -145,10 +151,13 @@ function App() {
             They get setUser so they can report a successful login back up. */}
         <Route path='/login' element={<Login setUser={setUser} />} />
         <Route path='/signup' element={<Signup setUser={setUser} />} />
-
-        {/* <Route path='/categories' element={<CategoriesPage />} /> */}
+        <Route path='/categories' element={<CategoryPage />} />
+        <Route path='/categories/:id' element={<CategoryDetailPage />} />
         <Route path='/accounts' element={<AccountsPage />} />
         <Route path='/accounts/:id' element={<AccountDetailPage />} />
+        <Route path='/transactions' element={<TransactionsPage/>} />
+        <Route path='/transactions/:id' element={<TransactionDetailPage />} />
+        <Route path="dashboard" element={<DashboardPage />} />
 
         {/*link to plaid */}
         <Route path='link-bank' element={<PlaidLinkPage />} />

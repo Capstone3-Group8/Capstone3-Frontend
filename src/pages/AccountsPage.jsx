@@ -15,7 +15,6 @@ export default function AccountsPage() {
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   // Load the accounts once, when the page first appears.
   useEffect(() => {
     getAccounts()
@@ -51,11 +50,6 @@ export default function AccountsPage() {
     }
   }
 
-  async function handleEdit(e){
-    e.preventDefault();
-
-  }
-
   if (loading) return <p>Loading accounts…</p>;
 
   return (
@@ -70,7 +64,10 @@ export default function AccountsPage() {
       )}
 
       {/* Add-an-account form */}
-      <form onSubmit={handleCreate} className="mb-6 flex gap-2">
+      <form 
+        onSubmit={handleCreate} 
+        className="mb-6 grid grid-cols-1 gap-2 sm:grid-cols-2"
+      >
         <input
           value={account.name}
           onChange={(e) => setAccount({ ...account, name: e.target.value })}
@@ -99,7 +96,7 @@ export default function AccountsPage() {
         />
         <button
           type="submit"
-          className="rounded-md bg-(--accent) px-4 py-2 font-medium text-white"
+          className="rounded-md bg-(--accent) px-4 py-2 font-medium text-white sm:col-span-2"
         >
           Add
         </button>

@@ -1,15 +1,20 @@
-import { Outlet } from "react-router";
-import Navbar from "./Navbar";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
-// Layout is the frame every page shares: navbar on top, page below.
-// <Outlet /> is the slot where the matched child route renders.
-export default function Layout() {
-  return (
-   <div className="flex min-h-screen flex-col text-left">
-        <Navbar />
-        <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8">
-          <Outlet />
-        </main>
-      </div>
-  );
+export async function request(path, options = {}) {
+  const res = await fetch(`${BASE_URL}${path}`, {
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+    ...options,
+  });
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.error || `Request failed (${res.status})`);
+  }
+
+  if (res.status === 204) return null;
+  return res.json();
 }
