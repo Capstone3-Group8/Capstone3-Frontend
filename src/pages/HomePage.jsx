@@ -7,34 +7,34 @@ export default function HomePage() {
       <p className="mb-6">
         Your Personal Finance Tracker, to help you manage your budgets
       </p>
-      <div className="flex items-center justify-center gap-3">
+      <div className="flex flex-wrap items-center justify-center gap-3">
         <Link
           to="/accounts"
-          className="inline-block rounded-md bg-(--accent) px-5 py-2.5 font-medium text-white hover:bg-(--accent-border)"
+          className="inline-flex  min-w-40 max-w-48 items-center justify-center whitespace-nowrap rounded-md bg-(--accent) px-5 py-2.5 font-medium text-white hover:bg-(--accent-border)"
         >
           View Accounts →
         </Link>
         <Link
           to="/link-bank"
-          className="inline-block rounded-md bg-(--accent) px-5 py-2.5 front-medium text-white hover:bg-(--accent-border)"
+          className="inline-flex  min-w-40 max-w-48 items-center justify-center whitespace-nowrap rounded-md bg-(--accent) px-5 py-2.5 font-medium text-white hover:bg-(--accent-border)"
           >
             Link Bank Account →
         </Link>
         <Link
           to="/transactions"
-          className="inline-block rounded-md bg-(--accent) px-5 py-2.5 font-medium text-white hover:bg-(--accent-border)"
+          className="inline-flex  min-w-40 max-w-48 items-center justify-center whitespace-nowrap rounded-md bg-(--accent) px-5 py-2.5 font-medium text-white hover:bg-(--accent-border)"
         >
           View Transactions →
         </Link>
          <Link
           to="/categories"
-          className="inline-block rounded-md bg-(--accent) px-5 py-2.5 font-medium text-white hover:bg-(--accent-border)"
+          className="inline-flex  min-w-40 max-w-48 items-center justify-center whitespace-nowrap rounded-md bg-(--accent) px-5 py-2.5 font-medium text-white hover:bg-(--accent-border)"
         >
           View Categories →
         </Link>
         <Link
           to="/protected"
-          className="inline-block rounded-md border border-(--border) px-5 py-2.5 font-medium hover:text-(--text-h)"
+          className="inline-flex  min-w-40 max-w-48 items-center justify-center whitespace-nowrap rounded-md bg-(--accent) px-5 py-2.5 font-medium text-white hover:bg-(--accent-border)"
         >
           Protected page →
         </Link>

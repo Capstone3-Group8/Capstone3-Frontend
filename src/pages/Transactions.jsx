@@ -1,49 +1,62 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
-import {
-  getTransactions,
-  createTransaction,
-  deleteTransaction,
-} from "../api/transactions";
+import { getTransactions, createTransaction } from "../api/transactions";
+import { getAccounts } from "../api/accounts";
+import { getCategories } from "../api/categories";
 
 export default function TransactionsPage() {
   const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [transaction, setTransaction] = useState({
-    user_id: "",
+  const [accounts, setAccounts] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  const [form, setForm] = useState({
     account_id: "",
     category_id: "",
     amount: "",
-    type: "",
+    type: "deposit",
     date: "",
     description: "",
   });
 
+  const [error, setError] = useState("");
+
+  // Load accounts, categories, and transactions
   useEffect(() => {
-    getTransactions()
-      .then(setTransactions)
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
-  }, []);
+    async function loadData() {
+      try {
+        const acc = await getAccounts();
+        const cat = await getCategories();
+        const tx = await getTransactions();
 
-  async function handleCreate(e) {
-    e.preventDefault();
-
-    if (!transaction.user_id || !transaction.account_id || !transaction.amount || !transaction.type || !transaction.date || !transaction.description) {
-      setError("Please fill in all required transaction fields.");
-      return;
+        setAccounts(acc);
+        setCategories(cat);
+        setTransactions(tx);
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load data");
+      }
     }
 
+    loadData();
+  }, []);
+
+  // Handle form changes
+  function handleChange(e) {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  }
+
+  // Submit new transaction
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setError("");
+
     try {
-      const newTransaction = await createTransaction({
-        user_id: transaction.user_id,
-        account_id: Number(transaction.account_id),
-        category_id: transaction.category_id ? Number(transaction.category_id) : null,
-        amount: Number(transaction.amount),
-        type: transaction.type,
-        date: transaction.date,
-        description: transaction.description,
+      const newTx = await createTransaction({
+        account_id: Number(form.account_id),
+        category_id: Number(form.category_id),
+        amount: Number(form.amount),
+        type: form.type,
+        date: form.date,
+        description: form.description,
       });
       setTransactions([newTransaction, ...transactions]);
       // setTitle('');
@@ -52,110 +65,114 @@ export default function TransactionsPage() {
         account_id: "",
         category_id: "",
         amount: "",
-        type: "",
+        type: "deposit",
         date: "",
         description: "",
       });
-      setError(null);
     } catch (err) {
-      setError(err.message);
+      console.error(err);
+      setError(err.message || "Something went wrong");
     }
   }
-
-  async function handleDelete(id) {
-    try {
-      await deleteTransaction(id);
-      setTransactions((current) => current.filter((t) => t.id !== id));
-    } catch (err) {
-      setError(err.message);
-    }
-  }
-
-  if (loading) return <p>Loading transactions…</p>;
 
   return (
-      <section>
-      <h1 className="mb-6 text-3xl font-semibold text-(--text-h)">Transactions</h1>
+    <section className="mx-auto max-w-3xl p-4">
+      <h1 className="text-2xl font-bold mb-4">Transactions</h1>
 
       {error && (
-        <p className="mb-4 rounded-md bg-red-500/10 px-3 py-2 text-red-500">
-          {error}
-        </p>
+        <p className="text-red-600 font-semibold mb-4">{error}</p>
       )}
 
-      <form onSubmit={handleCreate} className="mb-6 grid gap-3 md:grid-cols-2">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3 mb-6">
+
+        {/* Account Selector */}
+        <select
+          name="account_id"
+          value={form.account_id}
+          onChange={handleChange}
+          className="border p-2 rounded"
+        >
+          <option value="">Select Account</option>
+          {accounts.map((acc) => (
+            <option key={acc.id} value={acc.id}>
+              {acc.name}
+            </option>
+          ))}
+        </select>
+
+        {/* Category Selector */}
+        <select
+          name="category_id"
+          value={form.category_id}
+          onChange={handleChange}
+          className="border p-2 rounded"
+        >
+          <option value="">Select Category</option>
+          {categories.map((cat) => (
+            <option key={cat.id} value={cat.id}>
+              {cat.name}
+            </option>
+          ))}
+        </select>
+
+        {/* Amount */}
         <input
-          value={transaction.user_id}
-          onChange={(e) => setTransaction({ ...transaction, user_id: e.target.value })}
-          placeholder="User ID"
-          className="rounded-md border border-(--border) bg-transparent px-3 py-2"
-        />
-        <input
-          value={transaction.account_id}
-          onChange={(e) => setTransaction({ ...transaction, account_id: e.target.value })}
-          placeholder="Account ID"
-          className="rounded-md border border-(--border) bg-transparent px-3 py-2"
-        />
-        <input
-          value={transaction.category_id}
-          onChange={(e) => setTransaction({ ...transaction, category_id: e.target.value })}
-          placeholder="Category ID"
-          className="rounded-md border border-(--border) bg-transparent px-3 py-2"
-        />
-        <input
-          value={transaction.amount}
-          onChange={(e) => setTransaction({ ...transaction, amount: e.target.value })}
-          placeholder="Amount"
           type="number"
-          step="0.01"
-          className="rounded-md border border-(--border) bg-transparent px-3 py-2"
+          name="amount"
+          value={form.amount}
+          onChange={handleChange}
+          placeholder="Amount"
+          className="border p-2 rounded"
         />
+
+        {/* Type */}
+        <select
+          name="type"
+          value={form.type}
+          onChange={handleChange}
+          className="border p-2 rounded"
+        >
+          <option value="deposit">Deposit</option>
+          <option value="withdrawal">Withdrawal</option>
+        </select>
+
+        {/* Date */}
         <input
-          value={transaction.type}
-          onChange={(e) => setTransaction({ ...transaction, type: e.target.value })}
-          placeholder="Type (deposit or withdrawal)"
-          className="rounded-md border border-(--border) bg-transparent px-3 py-2"
-        />
-        <input
-          value={transaction.date}
-          onChange={(e) => setTransaction({ ...transaction, date: e.target.value })}
-          placeholder="Date"
           type="date"
-          className="rounded-md border border-(--border) bg-transparent px-3 py-2"
+          name="date"
+          value={form.date}
+          onChange={handleChange}
+          className="border p-2 rounded"
         />
+
+        {/* Description */}
         <input
-          value={transaction.description}
-          onChange={(e) => setTransaction({ ...transaction, description: e.target.value })}
+          type="text"
+          name="description"
+          value={form.description}
+          onChange={handleChange}
           placeholder="Description"
-          className="rounded-md border border-(--border) bg-transparent px-3 py-2 md:col-span-2"
+          className="border p-2 rounded"
         />
+
         <button
           type="submit"
-          className="rounded-md bg-(--accent) px-4 py-2 font-medium text-white md:col-span-2"
+          className="bg-purple-600 text-white p-2 rounded hover:bg-purple-700"
         >
           Add Transaction
         </button>
       </form>
 
+      {/* Transactions List */}
       {transactions.length === 0 ? (
         <p>No transactions yet. Add one above.</p>
       ) : (
-        <ul className="flex flex-col gap-2">
-          {transactions.map((item) => (
-            <li
-              key={item.id}
-              className="flex items-center gap-3 rounded-md border border-(--border) px-4 py-3"
-            >
-              <Link to={`/transactions/${item.id}`} className="flex-1">
-                {item.description} — {item.type} — ${Number(item.amount).toFixed(2)}
-              </Link>
-
-              <button
-                onClick={() => handleDelete(item.id)}
-                className="text-sm text-red-500 hover:underline"
-              >
-                Delete
-              </button>
+        <ul className="space-y-2">
+          {transactions.map((tx) => (
+            <li key={tx.id} className="border p-3 rounded">
+              <p><strong>{tx.type}</strong> — ${tx.amount}</p>
+              <p>{tx.description}</p>
+              <p>{new Date(tx.date).toLocaleDateString()}</p>
             </li>
           ))}
         </ul>

@@ -33,8 +33,6 @@ export default function TransactionDetailPage() {
       </h1>
 
       <div className="mt-4 space-y-2 text-sm">
-        <p>Account ID: {transaction.account_id}</p>
-        <p>Category ID: {transaction.category_id ?? "N/A"}</p>
         <p>Type: {transaction.type}</p>
         <p>Amount: ${Number(transaction.amount).toFixed(2)}</p>
         <p>Date: {new Date(transaction.date).toLocaleDateString()}</p>
