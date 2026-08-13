@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router';
 import { useAuth0 } from '@auth0/auth0-react';
+import DashboardPage from "./pages/DashboardPage";
 
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
@@ -155,6 +156,7 @@ function App() {
         <Route path='/accounts/:id' element={<AccountDetailPage />} />
         <Route path='/transactions' element={<TransactionsPage/>} />
         <Route path='/transactions/:id' element={<TransactionDetailPage />} />
+        <Route path="dashboard" element={<DashboardPage />} />
 
         {/* Only reachable when logged in — ProtectedRoute redirects otherwise. */}
         <Route

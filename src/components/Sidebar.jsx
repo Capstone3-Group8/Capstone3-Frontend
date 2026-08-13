@@ -25,6 +25,9 @@ export default function Sidebar({ user, onLogout }) {
       </NavLink>
 
       <nav className='flex flex-1 flex-col gap-1'>
+        <NavLink to="/dashboard" className={linkClass}>
+          Dashboard
+        </NavLink>
         <NavLink to='/accounts' className={linkClass}>
           Accounts
         </NavLink>

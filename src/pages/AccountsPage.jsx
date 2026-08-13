@@ -19,7 +19,8 @@ export default function AccountsPage() {
   useEffect(() => {
     getAccounts()
       .then(setAccounts)
-      setLoading(false);
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
   }, []);
 
   // Create an account on the server, then add the returned row to the list on screen.
