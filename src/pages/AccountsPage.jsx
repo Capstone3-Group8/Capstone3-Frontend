@@ -26,11 +26,19 @@ export default function AccountsPage() {
   // Create an account on the server, then add the returned row to the list on screen.
   async function handleCreate(e) {
     e.preventDefault(); // stop the browser from reloading on submit
+    
+    // Validate required fields
+    if (!account.name || !account.type || !account.balance) {
+      setError("Please fill in all required fields (Name, Type, Balance).");
+      return;
+    }
+
     try {
+      setError(null); // Clear any previous errors
       const newAccount = await createAccount({
         name: account.name,
         type: account.type,
-        balance: account.balance,
+        balance: Number(account.balance),
         bank_name: account.bank_name,
       });
       setAccounts([newAccount, ...accounts]);
@@ -84,6 +92,8 @@ export default function AccountsPage() {
           value={account.balance}
           onChange={(e) => setAccount({ ...account, balance: e.target.value })}
           placeholder="Balance"
+          type="number"
+          step="0.01"
           className="flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2"
         />
         <input
