@@ -3,6 +3,7 @@ import { getTransactions } from "../api/transactions";
 import { getCategories } from "../api/categories";
 import CashFlowChart from "../components/CashFlowChart";
 import ExpensesByCategoryChart from "../components/ExpensesByCategoryChart";
+import AIFinancialInsights from "../components/AIFinancialInsights";
 
 export default function DashboardPage() {
     const [transactions, setTransactions] = useState([]);
@@ -99,6 +100,23 @@ export default function DashboardPage() {
         fill: categoryColors[index % categoryColors.length],
     }));
 
+    const financialData = {
+        dateRange: {
+            start: startDate || "all time",
+            end: endDate || "today",
+        },
+
+        totalIncome,
+        totalExpenses,
+        currentBalance,
+        averageTransaction,
+
+        expensesByCategory: expensesByCategory.map((category) => ({
+            name: category.name,
+            amount: category.value,
+        })),
+    };
+
   return (
     <section>
       <h1 className="mb-6 text-3xl font-semibold text-(--text-h)">
@@ -178,6 +196,11 @@ export default function DashboardPage() {
         <CashFlowChart data={chartData} />
         <ExpensesByCategoryChart data={coloredExpenses} />
       </div>
+
+      <AIFinancialInsights
+        financialData={financialData}
+        hasTransactions={filteredTransactions.length > 0}
+      />
     </section>
   );
 }
