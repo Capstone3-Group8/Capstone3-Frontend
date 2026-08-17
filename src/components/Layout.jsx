@@ -9,9 +9,9 @@ import Sidebar from './Sidebar';
 // here rather than on one page, because a broken login affects all of them.
 export default function Layout({ user, onLogout, authError }) {
   return (
-    <div className='flex min-h-screen text-left'>
+    <div className='flex h-screen overflow-hidden text-left'>
       <Sidebar user={user} onLogout={onLogout} />
-      <main className='mx-auto w-full max-w-3xl flex-1 px-4 py-8'>
+      <main className='mx-auto h-screen w-full max-w-7xl flex-1 overflow-y-auto px-6 py-8'>
         {authError && (
           <p
             role='alert'

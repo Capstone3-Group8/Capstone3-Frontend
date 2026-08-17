@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { getTransactions } from "../api/transactions";
 import { getCategories } from "../api/categories";
-import CashFlowChart from "../components/CashFlowChart";
-import ExpensesByCategoryChart from "../components/ExpensesByCategoryChart";
+import AIFinancialInsights from "../components/AIFinancialInsights";
+import FinanceAssistant from "../components/FinanceAssistant";
 
-export default function DashboardPage() {
+export default function AIInsightsPage() {
     const [transactions, setTransactions] = useState([]);
     const [categories, setCategories] = useState([]);
     const [error, setError] = useState(null);
@@ -47,19 +47,6 @@ export default function DashboardPage() {
             ? (totalIncome + totalExpenses) / filteredTransactions.length
             : 0;
 
-    const chartData = [
-      {
-        name: "Income",
-        amount: totalIncome,
-        fill: "#4ade80",
-      },
-      {
-        name: "Expenses",
-        amount: totalExpenses,
-        fill: "#f87171",
-      },
-    ];
-
     const categoryNames = new Map(
         categories.map((category) => [category.id, category.name]),
     );
@@ -86,23 +73,27 @@ export default function DashboardPage() {
             return result;
     }, []);
 
-    const categoryColors = [
-    "#c084fc",
-    "#f87171",
-    "#60a5fa",
-    "#fbbf24",
-    "#4ade80",
-    ];
+    const financialData = {
+        dateRange: {
+            start: startDate || "all time",
+            end: endDate || "today",
+        },
 
-    const coloredExpenses = expensesByCategory.map((item, index) => ({
-        ...item,
-        fill: categoryColors[index % categoryColors.length],
-    }));
+        totalIncome,
+        totalExpenses,
+        currentBalance,
+        averageTransaction,
+
+        expensesByCategory: expensesByCategory.map((category) => ({
+            name: category.name,
+            amount: category.value,
+        })),
+    };
 
   return (
     <section>
       <h1 className="mb-6 text-3xl font-semibold text-(--text-h)">
-        Overview
+        AI Insights
       </h1>
 
       {error && (
@@ -144,40 +135,17 @@ export default function DashboardPage() {
         </button>
         </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="rounded-lg border border-(--border) p-5">
-          <p className="text-sm">Total Income</p>
-          <p className="mt-2 text-3xl font-semibold text-green-400">
-            ${totalIncome.toFixed(2)}
-          </p>
-        </div>
+      <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.4fr)]">
+        <AIFinancialInsights
+            financialData={financialData}
+            hasTransactions={filteredTransactions.length > 0}
+        />
 
-        <div className="rounded-lg border border-(--border) p-5">
-          <p className="text-sm">Total Expenses</p>
-          <p className="mt-2 text-3xl font-semibold text-red-400">
-            ${totalExpenses.toFixed(2)}
-          </p>
+        <FinanceAssistant
+            financialData={financialData}
+            hasTransactions={filteredTransactions.length > 0}
+        />
         </div>
-
-        <div className="rounded-lg border border-(--border) p-5">
-          <p className="text-sm">Current Balance</p>
-          <p className="mt-2 text-3xl font-semibold text-(--text-h)">
-            ${currentBalance.toFixed(2)}
-          </p>
-        </div>
-
-        <div className="rounded-lg border border-(--border) p-5">
-          <p className="text-sm">Average Transaction</p>
-          <p className="mt-2 text-3xl font-semibold text-(--text-h)">
-            ${averageTransaction.toFixed(2)}
-          </p>
-        </div>
-      </div>
-
-      <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
-        <CashFlowChart data={chartData} />
-        <ExpensesByCategoryChart data={coloredExpenses} />
-      </div>
     </section>
   );
 }

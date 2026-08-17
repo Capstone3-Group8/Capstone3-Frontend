@@ -1,13 +1,32 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getFinancialInsights } from "../api/financialInsights";
 
 export default function AIFinancialInsights({
   financialData,
   hasTransactions,
 }) {
-  const [insights, setInsights] = useState(null);
+  const [insights, setInsights] = useState(() => {
+  try {
+    const savedInsights = sessionStorage.getItem(
+      "financialInsights",
+    );
+
+    return savedInsights ? JSON.parse(savedInsights) : null;
+  } catch {
+    return null;
+  }
+});
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+  if (insights) {
+    sessionStorage.setItem(
+      "financialInsights",
+      JSON.stringify(insights),
+    );
+  }
+}, [insights]);
 
   async function handleGenerateInsights() {
     setIsLoading(true);
@@ -24,15 +43,15 @@ export default function AIFinancialInsights({
   }
 
   return (
-    <section className="mt-6 rounded-lg border border-(--border) p-5">
+    <section className="rounded-lg border border-(--border) p-5 lg:h-[560px] lg:overflow-y-auto">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-semibold text-(--text-h)">
-            AI Financial Insights
+            AI analysis
           </h2>
 
           <p className="mt-1 text-sm">
-            Get a plain-language summary of the selected date range.
+            Automated insights from your recent activity
           </p>
         </div>
 
