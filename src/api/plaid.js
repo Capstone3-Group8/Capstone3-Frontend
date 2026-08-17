@@ -9,3 +9,20 @@ export async function createLinkToken() {
     });
     return res.data //  { link_token: "...."}
 }
+
+export async function exchangePublicToken(publicToken) {
+    const res = await axios.post(`${BASE_URL}/api/plaid/exchange-public-token`, 
+        { public_token: publicToken },
+        { withCredentials: true },
+    );
+    return res.data;
+};
+
+export async function syncTransactions() {
+  const res = await axios.post(
+    `${BASE_URL}/api/plaid/sync-transactions`,
+    {},
+    { withCredentials: true },
+  );
+  return res.data;
+}
