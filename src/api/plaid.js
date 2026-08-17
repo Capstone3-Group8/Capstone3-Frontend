@@ -17,3 +17,12 @@ export async function exchangePublicToken(publicToken) {
     );
     return res.data;
 };
+
+export async function syncTransactions() {
+  const res = await axios.post(
+    `${BASE_URL}/api/plaid/sync-transactions`,
+    {},
+    { withCredentials: true },
+  );
+  return res.data;
+}
