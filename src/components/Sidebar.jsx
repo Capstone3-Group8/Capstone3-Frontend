@@ -26,7 +26,7 @@ export default function Sidebar({ user, onLogout }) {
 
       <nav className='flex flex-1 flex-col gap-1'>
         <NavLink to="/dashboard" className={linkClass}>
-          Reports
+          Overview
         </NavLink>
         <NavLink to='/accounts' className={linkClass}>
           Accounts
@@ -36,6 +36,9 @@ export default function Sidebar({ user, onLogout }) {
         </NavLink>
         <NavLink to='/categories' className={linkClass}>
           Categories
+        </NavLink>
+        <NavLink to='/ai-insights' className={linkClass}>
+          AI Insights
         </NavLink>
         {/* Only show the protected link once someone is logged in. */}
         {user && (
