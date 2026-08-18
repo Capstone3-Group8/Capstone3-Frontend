@@ -4,6 +4,7 @@ import { getAccounts } from "../api/accounts";
 import { getCategories } from "../api/categories";
 
 export default function TransactionsPage() {
+  const [transaction, setTransaction] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [accounts, setAccounts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -50,7 +51,7 @@ export default function TransactionsPage() {
     setError("");
 
     try {
-      const newTx = await createTransaction({
+      const newTransaction = await createTransaction({
         account_id: Number(form.account_id),
         category_id: Number(form.category_id),
         amount: Number(form.amount),

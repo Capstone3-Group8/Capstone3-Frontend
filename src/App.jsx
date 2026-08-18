@@ -95,7 +95,9 @@ function App() {
 
     async function saveAuth0User() {
       try {
-        const token = await getAccessTokenSilently(); // Auth0's access token
+        const token = await getAccessTokenSilently({
+          authorizarionParams: {audience: import.meta.env.VITE_AUTH0_AUDIENCE}
+        }); // Auth0's access token
         const dbUser = await syncUser(token, {
           // Auth0 gives us a nickname; fall back to the email's local part.
           // It's only a SUGGESTION — the backend adjusts it if that username
