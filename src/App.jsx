@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router';
 import { useAuth0 } from '@auth0/auth0-react';
 import DashboardPage from "./pages/DashboardPage";
+import AIInsightsPage from "./pages/AIInsightsPage";
 
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
@@ -160,6 +161,7 @@ function App() {
         <Route path='/transactions' element={<TransactionsPage/>} />
         <Route path='/transactions/:id' element={<TransactionDetailPage />} />
         <Route path="dashboard" element={<DashboardPage />} />
+        <Route path="ai-insights" element={<AIInsightsPage />} />
 
         {/*link to plaid */}
         <Route path='link-bank' element={<PlaidLinkPage />} />
