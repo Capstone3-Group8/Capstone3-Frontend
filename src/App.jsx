@@ -167,6 +167,8 @@ function App() {
         <Route path='link-bank' element={<PlaidLinkPage />} />
 
         {/* Only reachable when logged in — ProtectedRoute redirects otherwise. */}
+        { /* Protected route commented out per request (frontend only). */ }
+        { /*
         <Route
           path='/protected'
           element={
@@ -175,6 +177,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        */ }
 
         {/* '*' matches anything no other route claimed. Keep it LAST. */}
         <Route path='*' element={<NotFoundPage />} />

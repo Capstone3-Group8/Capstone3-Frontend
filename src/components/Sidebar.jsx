@@ -41,11 +41,11 @@ export default function Sidebar({ user, onLogout }) {
           AI Insights
         </NavLink>
         {/* Only show the protected link once someone is logged in. */}
-        {user && (
+        {/* {user && (
           <NavLink to='/protected' className={linkClass}>
             Protected
           </NavLink>
-        )}
+        )} */}
       </nav>
 
       {/* Auth controls: your name + Log out, or the Log in / Sign up pair. */}
