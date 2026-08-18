@@ -80,8 +80,8 @@ export default function CategoryPage() {
           className="flex-1 rounded-md border border-(--border) bg-(--bg) px-3 py-2"
         >
           <option value="">Select type</option>
-          <option value="income">Income</option>
-          <option value="expense">Expense</option>
+          <option value="Income">Income</option>
+          <option value="Expense">Expense</option>
         </select>
         <input
           value={category.budget}

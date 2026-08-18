@@ -12,7 +12,7 @@ export default function TransactionsPage() {
     account_id: "",
     category_id: "",
     amount: "",
-    type: "deposit",
+    type: "Deposit",
     date: "",
     description: "",
   });
@@ -58,14 +58,18 @@ export default function TransactionsPage() {
         date: form.date,
         description: form.description,
       });
-      setTransactions([newTransaction, ...transactions]);
-      // setTitle('');
-      setTransaction({
-        user_id: "",
+
+      setTransactions((currentTransactions) => [
+        newTx,
+        ...currentTransactions,
+      ]);
+
+      
+     setForm({
         account_id: "",
         category_id: "",
         amount: "",
-        type: "deposit",
+        type: "Deposit",
         date: "",
         description: "",
       });
@@ -132,8 +136,8 @@ export default function TransactionsPage() {
           onChange={handleChange}
           className="border p-2 rounded"
         >
-          <option value="deposit">Deposit</option>
-          <option value="withdrawal">Withdrawal</option>
+          <option value="Deposit">Deposit</option>
+          <option value="Withdrawal">Withdrawal</option>
         </select>
 
         {/* Date */}

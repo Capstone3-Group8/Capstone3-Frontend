@@ -8,15 +8,18 @@ const suggestedQuestions = [
 ];
 
 export default function FinanceAssistant({
+    userId,
   financialData,
   hasTransactions,
 }) {
+ const storageKey =
+    `financeAssistantMessages:${userId || "guest"}`;
+
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState(() => {
   try {
-    const savedMessages = sessionStorage.getItem(
-      "financeAssistantMessages",
-    );
+    const savedMessages =
+      sessionStorage.getItem(storageKey);
 
     return savedMessages ? JSON.parse(savedMessages) : [];
   } catch {
@@ -28,10 +31,10 @@ export default function FinanceAssistant({
 
   useEffect(() => {
   sessionStorage.setItem(
-    "financeAssistantMessages",
+    storageKey,
     JSON.stringify(messages),
   );
-}, [messages]);
+}, [messages, storageKey]);
 
   async function askQuestion(questionToAsk) {
     const cleanedQuestion = questionToAsk.trim();

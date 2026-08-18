@@ -82,12 +82,20 @@ export default function AccountsPage() {
           placeholder="Name"
           className="flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2"
         />
-        <input
+        <select
           value={account.type}
-          onChange={(e) => setAccount({ ...account, type: e.target.value })}
-          placeholder="Type (Inome or Expense)"
-          className="flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2"
-        />
+          onChange={(e) =>
+            setAccount({ ...account, type: e.target.value })
+          }
+          className="rounded-md border border-(--border) bg-(--bg) px-3 py-2"
+        >
+          <option value="">Account type</option>
+          <option value="checking">Checking</option>
+          <option value="savings">Savings</option>
+          <option value="cash">Cash</option>
+          <option value="investment">Investment</option>
+          <option value="credit">Credit card</option>
+        </select>
         <input
           value={account.balance}
           onChange={(e) => setAccount({ ...account, balance: e.target.value })}

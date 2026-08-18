@@ -2,14 +2,17 @@ import { useEffect, useState } from "react";
 import { getFinancialInsights } from "../api/financialInsights";
 
 export default function AIFinancialInsights({
+  userId,
   financialData,
   hasTransactions,
 }) {
+
+    const storageKey =
+    `financialInsights:${userId || "guest"}`;
+    
   const [insights, setInsights] = useState(() => {
   try {
-    const savedInsights = sessionStorage.getItem(
-      "financialInsights",
-    );
+    const savedInsights = sessionStorage.getItem(storageKey);
 
     return savedInsights ? JSON.parse(savedInsights) : null;
   } catch {
@@ -22,11 +25,11 @@ export default function AIFinancialInsights({
   useEffect(() => {
   if (insights) {
     sessionStorage.setItem(
-      "financialInsights",
+      storageKey,
       JSON.stringify(insights),
     );
   }
-}, [insights]);
+}, [insights, storageKey]);
 
   async function handleGenerateInsights() {
     setIsLoading(true);

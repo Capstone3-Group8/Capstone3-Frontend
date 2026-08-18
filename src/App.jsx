@@ -159,7 +159,15 @@ function App() {
         <Route path='/transactions' element={<TransactionsPage/>} />
         <Route path='/transactions/:id' element={<TransactionDetailPage />} />
         <Route path="dashboard" element={<DashboardPage />} />
-        <Route path="ai-insights" element={<AIInsightsPage />} />
+        <Route
+          path="ai-insights"
+          element={
+            <AIInsightsPage
+              key={user?.id || "guest"}
+              user={user}
+            />
+          }
+        />
 
         {/*link to plaid */}
         <Route path='link-bank' element={<PlaidLinkPage />} />
