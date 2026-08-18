@@ -3,6 +3,7 @@ import { getTransactions } from "../api/transactions";
 import { getCategories } from "../api/categories";
 import CashFlowChart from "../components/CashFlowChart";
 import ExpensesByCategoryChart from "../components/ExpensesByCategoryChart";
+import { getBudgetAnalysis } from "../api/budgetAnalysis";
 
 export default function DashboardPage() {
     const [transactions, setTransactions] = useState([]);
@@ -10,6 +11,7 @@ export default function DashboardPage() {
     const [error, setError] = useState(null);
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
+    const [budgetAnalysis, setBudgetAnalysis] = useState([]);
 
     useEffect(() => {
         Promise.all([getTransactions(), getCategories()])
@@ -178,6 +180,88 @@ export default function DashboardPage() {
         <CashFlowChart data={chartData} />
         <ExpensesByCategoryChart data={coloredExpenses} />
       </div>
+
+      <h2 className="mt-10 mb-4 text-2xl font-semibold">Set Category Budgets</h2>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {categories.map((cat) => (
+          <div
+            key={cat.id}
+            className="rounded-lg border border-(--border) p-5"
+          >
+            <p className="text-sm">{cat.name}</p>
+
+            <input
+              type="number"
+              placeholder="Enter monthly budget"
+              defaultValue={cat.budget}
+              onBlur={(e) => {
+                const newBudget = Number(e.target.value);
+
+                fetch(`/api/categories/${cat.id}`, {
+                  method: "PATCH",
+                  headers: { "Content-Type": "application/json" },
+                  credentials: "include",
+                  body: JSON.stringify({ budget: newBudget }),
+                })
+                  .then(() => {
+                    getCategories().then(setCategories);
+                  })
+                  .catch(console.error);
+              }}
+              className="mt-2 w-full rounded-md border border-(--border) bg-transparent px-3 py-2"
+            />
+          </div>
+        ))}
+      </div>
+
+      <h2 className="mt-10 mb-4 text-2xl font-semibold">Budget Analysis</h2>
+
+      <div className="flex items-center gap-4 mb-4">
+        <span>Analyze last</span>
+        <select
+          onChange={(e) => {
+            const months = Number(e.target.value);
+            getBudgetAnalysis(months).then(setBudgetAnalysis);
+          }}
+          className="rounded-md border border-(--border) bg-transparent px-3 py-2"
+        >
+          <option value="1">1 month</option>
+          <option value="3">3 months</option>
+          <option value="6">6 months</option>
+          <option value="12">12 months</option>
+        </select>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {budgetAnalysis.map((item) => (
+          <div
+            key={item.category_id}
+            className="rounded-lg border border-(--border) p-5"
+          >
+            <p className="text-sm">{item.category_name}</p>
+
+            <p className="mt-2">
+              Total Spent: ${item.total_spent_for_period.toFixed(2)}
+            </p>
+
+            <p>
+              Allowed Budget: ${item.total_budget_for_period.toFixed(2)}
+            </p>
+
+            <p
+              className={`mt-2 font-semibold ${
+                item.stayed_within_budget ? "text-green-400" : "text-red-400"
+              }`}
+            >
+              {item.stayed_within_budget
+                ? "Stayed within budget"
+                : "Exceeded budget"}
+            </p>
+          </div>
+        ))}
+      </div>
+
     </section>
   );
 }
