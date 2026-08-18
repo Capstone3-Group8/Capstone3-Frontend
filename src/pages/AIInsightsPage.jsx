@@ -129,7 +129,7 @@ export default function AIInsightsPage() {
             setStartDate("");
             setEndDate("");
             }}
-            className="rounded-md border border-(--border) px-3 py-2"
+            className="rounded-md btn-purple px-4 py-2 font-medium text-white sm:col-span-2"
         >
             Clear
         </button>

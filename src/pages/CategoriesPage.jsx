@@ -91,7 +91,7 @@ export default function CategoryPage() {
         />
         <button
           type="submit"
-          className="rounded-md bg-(--accent) px-4 py-2 font-medium text-white"
+          className="rounded-md btn-purple px-4 py-2 font-medium text-white"
         >
           Add
         </button>
