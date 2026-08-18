@@ -114,7 +114,7 @@ export default function AccountsPage() {
         />
         <button
           type="submit"
-          className="rounded-md bg-(--accent) px-4 py-2 font-medium text-white sm:col-span-2"
+          className="rounded-md btn-purple px-4 py-2 font-medium text-white sm:col-span-2"
         >
           Add
         </button>

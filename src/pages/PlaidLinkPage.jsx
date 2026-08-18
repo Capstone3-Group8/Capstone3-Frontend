@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { usePlaidLink } from 'react-plaid-link';
-import { createLinkToken } from '../api/plaid';
+import { createLinkToken, exchangePublicToken, syncTransactions } from '../api/plaid';
 
 export default function PlaidLinkPage() {
     const [linkToken, setLinkToken] = useState(null);
@@ -17,16 +17,35 @@ export default function PlaidLinkPage() {
         };
     }, []);
 
-    const { open, ready } =usePlaidLink({
+    const { open, ready } = usePlaidLink({
         token: linkToken,
-        onSuccess: (public_token, metadata) => {
-            console.log('Plaid Link success: public_token:', public_token, metadata);
+        onSuccess: async (public_token, metadata) => {
+            try {
+                const result = await exchangePublicToken(public_token);
+                console.log('Exchange successful:', result);
+            } catch (error) {
+                console.error('Failed to exchange token:', error.message);
+            }
         },
     });
 
+    async function handleSyncTransactions(){
+        try {
+            const result = await syncTransactions();
+            console.log('Sync result:', result);
+        } catch (error) {
+            console.error('Failed to sync transactions:', error.message);
+        }
+    }
+
     return (
+    <>
         <button onClick={() => open()} disabled ={!ready} className="rounded-md bg-(--accent) px-4 py-2 font-medium text-white">
             Connect bank account
         </button>
+        <button onClick={handleSyncTransactions} className="ml-3 rounded-md border border-(--border) px-4 py-2 font-medium">
+            Sync Transactions (test)
+        </button>
+    </>
     )
 }

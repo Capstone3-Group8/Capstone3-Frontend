@@ -95,7 +95,9 @@ function App() {
 
     async function saveAuth0User() {
       try {
-        const token = await getAccessTokenSilently(); // Auth0's access token
+        const token = await getAccessTokenSilently({
+          authorizarionParams: {audience: import.meta.env.VITE_AUTH0_AUDIENCE}
+        }); // Auth0's access token
         const dbUser = await syncUser(token, {
           // Auth0 gives us a nickname; fall back to the email's local part.
           // It's only a SUGGESTION — the backend adjusts it if that username
@@ -173,6 +175,8 @@ function App() {
         <Route path='link-bank' element={<PlaidLinkPage />} />
 
         {/* Only reachable when logged in — ProtectedRoute redirects otherwise. */}
+        { /* Protected route commented out per request (frontend only). */ }
+        { /*
         <Route
           path='/protected'
           element={
@@ -181,6 +185,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        */ }
 
         {/* '*' matches anything no other route claimed. Keep it LAST. */}
         <Route path='*' element={<NotFoundPage />} />
