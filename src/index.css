@@ -420,3 +420,28 @@ tbody tr:hover {
   border-color: rgba(37, 99, 235, 0.2);
 }
 
+/* Purple button used across forms (e.g. Add account) */
+.btn-purple {
+  background: linear-gradient(135deg, #aa3bff 0%, #7c3aed 100%);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  box-shadow: 0 10px 24px rgba(124, 58, 237, 0.16);
+}
+
+.btn-purple:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px rgba(124, 58, 237, 0.22);
+}
+
+.btn-purple:disabled,
+.btn-purple[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-purple:focus-visible {
+  outline: 3px solid rgba(170, 59, 255, 0.24);
+  outline-offset: 3px;
+}
+
