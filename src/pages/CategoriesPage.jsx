@@ -26,9 +26,10 @@ export default function CategoryPage() {
       setLoading(false);
     });
   }, []);
+
   useEffect(() => {
     getBudgetAnalysis(12).then(setBudgetAnalysis);
-  }, []);
+  }, [categories]);
 
   // Create a category on the server, then add the returned row to the list on screen.
   async function handleCreate(e) {
