@@ -62,7 +62,7 @@ export default function AIFinancialInsights({
           type="button"
           onClick={handleGenerateInsights}
           disabled={isLoading || !hasTransactions}
-          className="rounded-md bg-(--accent) px-4 py-2 font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
+          className="primary-btn disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isLoading ? "Analyzing…" : "Analyze My Spending"}
         </button>

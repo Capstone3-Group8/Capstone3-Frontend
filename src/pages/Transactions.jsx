@@ -176,7 +176,7 @@ export default function TransactionsPage() {
           <button
             type="button"
             onClick={() => setIsAccountModalOpen(true)}
-            className="shrink-0 rounded-lg bg-(--accent) px-4 py-2 font-semibold text-white"
+            className="primary-btn shrink-0"
           >
             + Add account
           </button>
@@ -230,7 +230,7 @@ export default function TransactionsPage() {
         <button
           type="button"
           onClick={() => setIsModalOpen(true)}
-          className="shrink-0 rounded-lg bg-(--accent) px-4 py-2 font-semibold text-white"
+          className="primary-btn shrink-0"
         >
           + Add transaction
         </button>
@@ -313,7 +313,7 @@ export default function TransactionsPage() {
 
               <button
                 type="submit"
-                className="rounded bg-(--accent) p-2 font-semibold text-white hover:opacity-90"
+                className="primary-btn"
               >
                 Add Account
               </button>
@@ -416,7 +416,7 @@ export default function TransactionsPage() {
 
               <button
                 type="submit"
-                className="rounded bg-(--accent) p-2 font-semibold text-white hover:opacity-90"
+                className="primary-btn"
               >
                 Add Transaction
               </button>
