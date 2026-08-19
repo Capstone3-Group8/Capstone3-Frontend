@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { getTransactions, createTransaction } from "../api/transactions";
+import {
+  createTransaction,
+  deleteTransaction,
+  getTransactions,
+} from "../api/transactions";
 import { createAccount, deleteAccount, getAccounts } from "../api/accounts";
 import { getCategories } from "../api/categories";
 
@@ -102,6 +106,27 @@ export default function TransactionsPage() {
     } catch (err) {
       console.error(err);
       setError(err.message || "Could not delete account");
+    }
+  }
+
+  async function handleDeleteTransaction(transactionId) {
+    const shouldDelete = window.confirm(
+      "Are you sure you want to delete this transaction?",
+    );
+
+    if (!shouldDelete) return;
+
+    try {
+      setError("");
+      await deleteTransaction(transactionId);
+      setTransactions((currentTransactions) =>
+        currentTransactions.filter(
+          (transaction) => transaction.id !== transactionId,
+        ),
+      );
+    } catch (err) {
+      console.error(err);
+      setError(err.message || "Could not delete transaction");
     }
   }
 
@@ -546,13 +571,25 @@ export default function TransactionsPage() {
                           </div>
                         </div>
 
-                        <p
-                          className={`shrink-0 font-semibold ${
-                            isDeposit ? "text-green-500" : "text-red-400"
-                          }`}
-                        >
-                          {isDeposit ? "+" : "−"}${Math.abs(Number(tx.amount)).toFixed(2)}
-                        </p>
+                        <div className="flex shrink-0 items-center gap-4">
+                          <p
+                            className={`font-semibold ${
+                              isDeposit ? "text-green-500" : "text-red-400"
+                            }`}
+                          >
+                            {isDeposit ? "+" : "−"}$
+                            {Math.abs(Number(tx.amount)).toFixed(2)}
+                          </p>
+
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteTransaction(tx.id)}
+                            className="text-sm text-red-500 hover:underline"
+                            aria-label={`Delete ${tx.description || "transaction"}`}
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </li>
                     );
                   })}
