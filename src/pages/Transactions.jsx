@@ -14,6 +14,7 @@ export default function TransactionsPage() {
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [accountForm, setAccountForm] = useState({
     name: "",
@@ -165,7 +166,27 @@ export default function TransactionsPage() {
     }
   }
 
-  const sortedTransactions = [...transactions].sort(
+  const normalizedSearchTerm = searchTerm.trim().toLowerCase();
+
+  const filteredTransactions = transactions.filter((transaction) => {
+    if (!normalizedSearchTerm) return true;
+
+    const searchableValues = [
+      transaction.description,
+      transaction.type,
+      transaction.amount,
+      getCategoryName(transaction.category_id),
+      getAccountName(transaction.account_id),
+    ];
+
+    return searchableValues.some((value) =>
+      String(value ?? "")
+        .toLowerCase()
+        .includes(normalizedSearchTerm),
+    );
+  });
+
+  const sortedTransactions = [...filteredTransactions].sort(
     (a, b) => new Date(b.date) - new Date(a.date),
   );
 
@@ -510,10 +531,33 @@ export default function TransactionsPage() {
         </div>
       )}
 
+      {transactions.length > 0 && (
+        <div className="mb-4">
+          <label htmlFor="transaction-search" className="sr-only">
+            Search transactions
+          </label>
+          <input
+            id="transaction-search"
+            type="search"
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+            placeholder="Search category, account, amount, type, or note..."
+            className="w-full rounded-xl border border-(--border) bg-(--panel) px-4 py-3 text-(--text-h) outline-none transition focus:border-(--primary)"
+          />
+        </div>
+      )}
+
       {transactions.length === 0 ? (
         <div className="rounded-xl border border-(--border) p-8 text-center">
           <p className="font-semibold text-(--text-h)">No transactions yet</p>
           <p className="mt-1 text-sm">Add your first transaction to get started.</p>
+        </div>
+      ) : filteredTransactions.length === 0 ? (
+        <div className="rounded-xl border border-(--border) p-8 text-center">
+          <p className="font-semibold text-(--text-h)">No matching transactions</p>
+          <p className="mt-1 text-sm text-(--text)">
+            Try a different category, account, amount, type, or note.
+          </p>
         </div>
       ) : (
         <div className="overflow-hidden rounded-xl border border-(--border)">
