@@ -35,11 +35,11 @@ export default function DashboardPage() {
     });
 
     const totalIncome = filteredTransactions
-        .filter((transaction) => transaction.type.toLowerCase() === "deposit")
+      .filter((transaction) => transaction.type.toLowerCase() === "deposit")
         .reduce((total, transaction) => total + Number(transaction.amount), 0);
 
     const totalExpenses = filteredTransactions
-        .filter((transaction) => transaction.type.toLowerCase() === "withdrawal")
+      .filter((transaction) => transaction.type.toLowerCase() === "withdrawal")
         .reduce((total, transaction) => total + Number(transaction.amount), 0);
 
     const currentBalance = totalIncome - totalExpenses;
@@ -67,7 +67,7 @@ export default function DashboardPage() {
     );
 
     const expensesByCategory = filteredTransactions
-        .filter((transaction) => transaction.type.toLowerCase() === "withdrawal")
+      .filter((transaction) => transaction.type.toLowerCase() === "withdrawal")
         .reduce((result, transaction) => {
             const categoryName =
             categoryNames.get(transaction.category_id) || "Uncategorized";

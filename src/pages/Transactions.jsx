@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import {
+  getTransactions,
   createTransaction,
   deleteTransaction,
-  getTransactions,
 } from "../api/transactions";
-import { createAccount, deleteAccount, getAccounts } from "../api/accounts";
+import {
+  getAccounts,
+  createAccount,
+  deleteAccount,
+} from "../api/accounts";
 import { getCategories } from "../api/categories";
 
 export default function TransactionsPage() {
@@ -69,6 +73,33 @@ export default function TransactionsPage() {
 
     return account?.name || "Unknown account";
   }
+
+  function isLiabilityAccount(account) {
+    return ["credit", "loan"].includes(account.type?.toLowerCase());
+  }
+
+  function getCurrentAccountBalance(account) {
+    const accountTransactions = transactions.filter(
+      (transaction) => Number(transaction.account_id) === Number(account.id),
+    );
+
+    return accountTransactions.reduce((balance, transaction) => {
+      const amount = Number(transaction.amount);
+      return transaction.type.toLowerCase() === "withdrawal"
+        ? balance - amount
+        : balance + amount;
+    }, Number(account.balance) || 0);
+  }
+
+  const totalAssets = accounts
+    .filter((account) => !isLiabilityAccount(account))
+    .reduce((total, account) => total + getCurrentAccountBalance(account), 0);
+
+  const totalDebt = accounts
+    .filter(isLiabilityAccount)
+    .reduce((total, account) => total + Math.abs(getCurrentAccountBalance(account)), 0);
+
+  const netWorth = totalAssets - totalDebt;
 
   async function handleCreateAccount(e) {
     e.preventDefault();
@@ -164,69 +195,6 @@ export default function TransactionsPage() {
       setError(err.message || "Something went wrong");
     }
   }
-
-  const sortedTransactions = [...transactions].sort(
-    (a, b) => new Date(b.date) - new Date(a.date),
-  );
-
-  const groupedTransactions = sortedTransactions.reduce(
-    (groups, transaction) => {
-      const dateKey = String(transaction.date).split("T")[0];
-
-      if (!groups[dateKey]) {
-        groups[dateKey] = [];
-      }
-
-      groups[dateKey].push(transaction);
-      return groups;
-    },
-    {},
-  );
-
-  function isLiabilityAccount(account) {
-    const accountLabel = `${account.name || ""} ${account.type || ""}`.toLowerCase();
-    const liabilityWords = ["credit", "loan", "debt", "mortgage"];
-
-    return liabilityWords.some((word) => accountLabel.includes(word));
-  }
-
-  function getCurrentAccountBalance(account) {
-    const startingBalance = Math.abs(Number(account.balance || 0));
-    const isLiability = isLiabilityAccount(account);
-
-    return transactions.reduce((balance, transaction) => {
-      if (Number(transaction.account_id) !== Number(account.id)) {
-        return balance;
-      }
-
-      const amount = Math.abs(Number(transaction.amount || 0));
-      const isDeposit = transaction.type?.toLowerCase() === "deposit";
-
-      if (isLiability) {
-        return isDeposit ? balance - amount : balance + amount;
-      }
-
-      return isDeposit ? balance + amount : balance - amount;
-    }, startingBalance);
-  }
-
-  const totalAssets = accounts.reduce(
-    (total, account) =>
-      isLiabilityAccount(account)
-        ? total
-        : total + getCurrentAccountBalance(account),
-    0,
-  );
-
-  const totalDebt = accounts.reduce(
-    (total, account) =>
-      isLiabilityAccount(account)
-        ? total + Math.max(0, getCurrentAccountBalance(account))
-        : total,
-    0,
-  );
-
-  const netWorth = totalAssets - totalDebt;
 
   return (
     <section className="mx-auto w-full max-w-5xl p-4">
@@ -516,88 +484,15 @@ export default function TransactionsPage() {
           <p className="mt-1 text-sm">Add your first transaction to get started.</p>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-(--border)">
-          {Object.entries(groupedTransactions).map(([date, dateTransactions]) => {
-            const dailyTotal = dateTransactions.reduce((total, tx) => {
-              const amount = Number(tx.amount);
-              return tx.type?.toLowerCase() === "deposit"
-                ? total + amount
-                : total - amount;
-            }, 0);
-
-            return (
-              <div key={date}>
-                <div className="flex items-center justify-between bg-(--code-bg) px-4 py-2 text-sm font-semibold">
-                  <span>
-                    {new Date(`${date}T00:00:00`).toLocaleDateString(undefined, {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                  </span>
-                  <span className={dailyTotal >= 0 ? "text-green-500" : "text-red-400"}>
-                    {dailyTotal >= 0 ? "+" : "−"}${Math.abs(dailyTotal).toFixed(2)}
-                  </span>
-                </div>
-
-                <ul className="divide-y divide-(--border)">
-                  {dateTransactions.map((tx) => {
-                    const isDeposit = tx.type?.toLowerCase() === "deposit";
-
-                    return (
-                      <li
-                        key={tx.id}
-                        className="flex items-center justify-between gap-4 px-4 py-4"
-                      >
-                        <div className="flex min-w-0 items-center gap-3">
-                          <div
-                            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-bold ${
-                              isDeposit
-                                ? "bg-green-500/15 text-green-500"
-                                : "bg-red-500/15 text-red-400"
-                            }`}
-                          >
-                            {isDeposit ? "+" : "−"}
-                          </div>
-
-                          <div className="min-w-0">
-                            <p className="truncate font-semibold text-(--text-h)">
-                              {tx.description || tx.type}
-                            </p>
-                            <p className="text-sm text-(--text)">
-                              {getCategoryName(tx.category_id)} ·{" "}
-                              {getAccountName(tx.account_id)}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex shrink-0 items-center gap-4">
-                          <p
-                            className={`font-semibold ${
-                              isDeposit ? "text-green-500" : "text-red-400"
-                            }`}
-                          >
-                            {isDeposit ? "+" : "−"}$
-                            {Math.abs(Number(tx.amount)).toFixed(2)}
-                          </p>
-
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteTransaction(tx.id)}
-                            className="text-sm text-red-500 hover:underline"
-                            aria-label={`Delete ${tx.description || "transaction"}`}
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            );
-          })}
-        </div>
+        <ul className="space-y-2">
+          {transactions.map((tx) => (
+            <li key={tx.id} className="border p-3 rounded">
+              <p><strong>{tx.type}</strong> — ${tx.amount}</p>
+              <p>{tx.description}</p>
+              <p>{new Date(tx.date).toLocaleDateString()}</p>
+            </li>
+          ))}
+        </ul>
       )}
     </section>
   );
