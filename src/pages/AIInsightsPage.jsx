@@ -4,7 +4,7 @@ import { getCategories } from "../api/categories";
 import AIFinancialInsights from "../components/AIFinancialInsights";
 import FinanceAssistant from "../components/FinanceAssistant";
 
-export default function AIInsightsPage() {
+export default function AIInsightsPage({ user }) {
     const [transactions, setTransactions] = useState([]);
     const [categories, setCategories] = useState([]);
     const [error, setError] = useState(null);
@@ -33,11 +33,11 @@ export default function AIInsightsPage() {
     });
 
     const totalIncome = filteredTransactions
-        .filter((transaction) => transaction.type === "deposit")
+        .filter((transaction) => transaction.type.toLowerCase() === "deposit")
         .reduce((total, transaction) => total + Number(transaction.amount), 0);
 
     const totalExpenses = filteredTransactions
-        .filter((transaction) => transaction.type === "withdrawal")
+        .filter((transaction) => transaction.type.toLowerCase() === "withdrawal")
         .reduce((total, transaction) => total + Number(transaction.amount), 0);
 
     const currentBalance = totalIncome - totalExpenses;
@@ -52,7 +52,7 @@ export default function AIInsightsPage() {
     );
 
     const expensesByCategory = filteredTransactions
-        .filter((transaction) => transaction.type === "withdrawal")
+        .filter((transaction) => transaction.type.toLowerCase() === "withdrawal")
         .reduce((result, transaction) => {
             const categoryName =
             categoryNames.get(transaction.category_id) || "Uncategorized";
@@ -137,11 +137,13 @@ export default function AIInsightsPage() {
 
       <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.4fr)]">
         <AIFinancialInsights
+            userId={user?.id}
             financialData={financialData}
             hasTransactions={filteredTransactions.length > 0}
         />
 
         <FinanceAssistant
+            userId={user?.id}
             financialData={financialData}
             hasTransactions={filteredTransactions.length > 0}
         />

@@ -2,14 +2,17 @@ import { useEffect, useState } from "react";
 import { getFinancialInsights } from "../api/financialInsights";
 
 export default function AIFinancialInsights({
+  userId,
   financialData,
   hasTransactions,
 }) {
+
+    const storageKey =
+    `financialInsights:${userId || "guest"}`;
+    
   const [insights, setInsights] = useState(() => {
   try {
-    const savedInsights = sessionStorage.getItem(
-      "financialInsights",
-    );
+    const savedInsights = sessionStorage.getItem(storageKey);
 
     return savedInsights ? JSON.parse(savedInsights) : null;
   } catch {
@@ -22,11 +25,11 @@ export default function AIFinancialInsights({
   useEffect(() => {
   if (insights) {
     sessionStorage.setItem(
-      "financialInsights",
+      storageKey,
       JSON.stringify(insights),
     );
   }
-}, [insights]);
+}, [insights, storageKey]);
 
   async function handleGenerateInsights() {
     setIsLoading(true);
@@ -59,7 +62,7 @@ export default function AIFinancialInsights({
           type="button"
           onClick={handleGenerateInsights}
           disabled={isLoading || !hasTransactions}
-          className="rounded-md bg-(--accent) px-4 py-2 font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
+          className="primary-btn disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isLoading ? "Analyzing…" : "Analyze My Spending"}
         </button>
