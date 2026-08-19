@@ -58,6 +58,14 @@ export default function TransactionsPage() {
     return category?.name || "Uncategorized";
   }
 
+  function getAccountName(accountId) {
+    const account = accounts.find(
+      (item) => Number(item.id) === Number(accountId),
+    );
+
+    return account?.name || "Unknown account";
+  }
+
   async function handleCreateAccount(e) {
     e.preventDefault();
     setError("");
@@ -480,7 +488,8 @@ export default function TransactionsPage() {
                               {tx.description || tx.type}
                             </p>
                             <p className="text-sm text-(--text)">
-                              {getCategoryName(tx.category_id)}
+                              {getCategoryName(tx.category_id)} ·{" "}
+                              {getAccountName(tx.account_id)}
                             </p>
                           </div>
                         </div>
