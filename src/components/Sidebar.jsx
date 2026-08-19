@@ -28,11 +28,8 @@ export default function Sidebar({ user, onLogout }) {
         <NavLink to="/dashboard" className={linkClass}>
           Overview
         </NavLink>
-        <NavLink to='/accounts' className={linkClass}>
-          Accounts
-        </NavLink>
         <NavLink to='/transactions' className={linkClass}>
-          Transactions
+          Accounts & Transactions
         </NavLink>
         <NavLink to='/categories' className={linkClass}>
           Categories

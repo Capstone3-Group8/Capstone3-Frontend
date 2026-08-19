@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getTransactions, createTransaction } from "../api/transactions";
-import { getAccounts } from "../api/accounts";
+import { createAccount, deleteAccount, getAccounts } from "../api/accounts";
 import { getCategories } from "../api/categories";
 
 export default function TransactionsPage() {
@@ -9,6 +9,14 @@ export default function TransactionsPage() {
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
+
+  const [accountForm, setAccountForm] = useState({
+    name: "",
+    type: "",
+    balance: "",
+    bank_name: "",
+  });
 
   const [form, setForm] = useState({
     account_id: "",
@@ -48,6 +56,45 @@ export default function TransactionsPage() {
     );
 
     return category?.name || "Uncategorized";
+  }
+
+  async function handleCreateAccount(e) {
+    e.preventDefault();
+    setError("");
+
+    try {
+      const newAccount = await createAccount({
+        name: accountForm.name,
+        type: accountForm.type,
+        balance: Number(accountForm.balance),
+        bank_name: accountForm.bank_name,
+      });
+
+      setAccounts((currentAccounts) => [newAccount, ...currentAccounts]);
+      setAccountForm({
+        name: "",
+        type: "",
+        balance: "",
+        bank_name: "",
+      });
+      setIsAccountModalOpen(false);
+    } catch (err) {
+      console.error(err);
+      setError(err.message || "Could not create account");
+    }
+  }
+
+  async function handleDeleteAccount(accountId) {
+    try {
+      setError("");
+      await deleteAccount(accountId);
+      setAccounts((currentAccounts) =>
+        currentAccounts.filter((account) => account.id !== accountId),
+      );
+    } catch (err) {
+      console.error(err);
+      setError(err.message || "Could not delete account");
+    }
   }
 
   async function handleSubmit(e) {
@@ -103,11 +150,78 @@ export default function TransactionsPage() {
     {},
   );
 
+  const totalAccountBalance = accounts.reduce(
+    (total, account) => total + Number(account.balance || 0),
+    0,
+  );
+
   return (
     <section className="mx-auto w-full max-w-5xl p-4">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold">Accounts & Transactions</h1>
+        <p className="mt-1 text-(--text)">
+          Manage your accounts, income, and expenses in one place
+        </p>
+      </div>
+
+      <section className="mb-10">
+        <div className="mb-4 flex items-end justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-bold">Accounts</h2>
+            <p className="mt-1 text-sm text-(--text)">
+              Total balance: ${totalAccountBalance.toFixed(2)}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setIsAccountModalOpen(true)}
+            className="shrink-0 rounded-lg bg-(--accent) px-4 py-2 font-semibold text-white"
+          >
+            + Add account
+          </button>
+        </div>
+
+        {accounts.length === 0 ? (
+          <div className="rounded-xl border border-(--border) p-6 text-center">
+            <p className="font-semibold text-(--text-h)">No accounts yet</p>
+            <p className="mt-1 text-sm">Add an account before recording transactions.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+            {accounts.map((account) => (
+              <article
+                key={account.id}
+                className="flex items-center justify-between gap-4 rounded-xl border border-(--border) p-4"
+              >
+                <div className="min-w-0">
+                  <p className="truncate font-semibold text-(--text-h)">
+                    {account.name}
+                  </p>
+                  <p className="text-sm capitalize text-(--text)">
+                    {[account.bank_name, account.type].filter(Boolean).join(" · ")}
+                  </p>
+                  <p className="mt-2 text-xl font-bold text-(--text-h)">
+                    ${Number(account.balance || 0).toFixed(2)}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleDeleteAccount(account.id)}
+                  className="shrink-0 text-sm text-red-500 hover:underline"
+                >
+                  Delete
+                </button>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+
       <div className="mb-6 flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Transactions</h1>
+          <h2 className="text-2xl font-bold">Transactions</h2>
           <p className="mt-1 text-(--text)">
             Every income and expense in one place
           </p>
@@ -126,6 +240,86 @@ export default function TransactionsPage() {
         <p className="mb-4 rounded-lg bg-red-500/10 p-3 font-semibold text-red-500">
           {error}
         </p>
+      )}
+
+      {isAccountModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+          <div className="w-full max-w-xl rounded-xl border border-(--border) bg-(--bg) p-6 shadow-2xl">
+            <div className="mb-5 flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-bold">Add an account</h2>
+                <p className="mt-1 text-(--text)">
+                  Create an account for your transactions.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsAccountModalOpen(false)}
+                className="text-2xl text-(--text) hover:text-(--text-h)"
+                aria-label="Close account form"
+              >
+                ×
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateAccount} className="flex flex-col gap-3">
+              <input
+                value={accountForm.name}
+                onChange={(e) =>
+                  setAccountForm({ ...accountForm, name: e.target.value })
+                }
+                placeholder="Account name"
+                className="rounded border border-(--border) bg-(--bg) p-2"
+                required
+              />
+
+              <select
+                value={accountForm.type}
+                onChange={(e) =>
+                  setAccountForm({ ...accountForm, type: e.target.value })
+                }
+                className="rounded border border-(--border) bg-(--bg) p-2"
+                required
+              >
+                <option value="">Account type</option>
+                <option value="checking">Checking</option>
+                <option value="savings">Savings</option>
+                <option value="cash">Cash</option>
+                <option value="investment">Investment</option>
+                <option value="credit">Credit card</option>
+              </select>
+
+              <input
+                type="number"
+                step="0.01"
+                value={accountForm.balance}
+                onChange={(e) =>
+                  setAccountForm({ ...accountForm, balance: e.target.value })
+                }
+                placeholder="Starting balance"
+                className="rounded border border-(--border) bg-(--bg) p-2"
+                required
+              />
+
+              <input
+                value={accountForm.bank_name}
+                onChange={(e) =>
+                  setAccountForm({ ...accountForm, bank_name: e.target.value })
+                }
+                placeholder="Bank name (optional)"
+                className="rounded border border-(--border) bg-(--bg) p-2"
+              />
+
+              <button
+                type="submit"
+                className="rounded bg-(--accent) p-2 font-semibold text-white hover:opacity-90"
+              >
+                Add Account
+              </button>
+            </form>
+          </div>
+        </div>
       )}
 
       {isModalOpen && (

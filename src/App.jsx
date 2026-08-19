@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Routes, Route } from 'react-router';
+import { Navigate, Routes, Route } from 'react-router';
 import { useAuth0 } from '@auth0/auth0-react';
 import DashboardPage from "./pages/DashboardPage";
 import AIInsightsPage from "./pages/AIInsightsPage";
 
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
-import AccountsPage from './pages/AccountsPage';
 import TransactionsPage from './pages/Transactions';
 import TransactionDetailPage from './pages/TransactionsDetails';
 import CategoryPage from './pages/CategoriesPage';
@@ -156,7 +155,7 @@ function App() {
         <Route path='/signup' element={<Signup setUser={setUser} />} />
         <Route path='/categories' element={<CategoryPage />} />
         <Route path='/categories/:id' element={<CategoryDetailPage />} />
-        <Route path='/accounts' element={<AccountsPage />} />
+        <Route path='/accounts' element={<Navigate to='/transactions' replace />} />
         <Route path='/accounts/:id' element={<AccountDetailPage />} />
         <Route path='/transactions' element={<TransactionsPage/>} />
         <Route path='/transactions/:id' element={<TransactionDetailPage />} />
