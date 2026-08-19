@@ -165,18 +165,38 @@ export default function TransactionsPage() {
     return liabilityWords.some((word) => accountLabel.includes(word));
   }
 
+  function getCurrentAccountBalance(account) {
+    const startingBalance = Math.abs(Number(account.balance || 0));
+    const isLiability = isLiabilityAccount(account);
+
+    return transactions.reduce((balance, transaction) => {
+      if (Number(transaction.account_id) !== Number(account.id)) {
+        return balance;
+      }
+
+      const amount = Math.abs(Number(transaction.amount || 0));
+      const isDeposit = transaction.type?.toLowerCase() === "deposit";
+
+      if (isLiability) {
+        return isDeposit ? balance - amount : balance + amount;
+      }
+
+      return isDeposit ? balance + amount : balance - amount;
+    }, startingBalance);
+  }
+
   const totalAssets = accounts.reduce(
     (total, account) =>
       isLiabilityAccount(account)
         ? total
-        : total + Number(account.balance || 0),
+        : total + getCurrentAccountBalance(account),
     0,
   );
 
   const totalDebt = accounts.reduce(
     (total, account) =>
       isLiabilityAccount(account)
-        ? total + Math.abs(Number(account.balance || 0))
+        ? total + Math.max(0, getCurrentAccountBalance(account))
         : total,
     0,
   );
@@ -238,7 +258,10 @@ export default function TransactionsPage() {
                     {[account.bank_name, account.type].filter(Boolean).join(" · ")}
                   </p>
                   <p className="mt-2 text-xl font-bold text-(--text-h)">
-                    ${Number(account.balance || 0).toFixed(2)}
+                    ${getCurrentAccountBalance(account).toFixed(2)}
+                  </p>
+                  <p className="text-xs text-(--muted)">
+                    {isLiabilityAccount(account) ? "Amount owed" : "Current balance"}
                   </p>
                 </div>
 
