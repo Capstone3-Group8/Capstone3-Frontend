@@ -26,7 +26,7 @@ export default function TransactionsPage() {
     account_id: "",
     category_id: "",
     amount: "",
-    type: "Deposit",
+    type: "Withdrawal",
     date: "",
     description: "",
   });
