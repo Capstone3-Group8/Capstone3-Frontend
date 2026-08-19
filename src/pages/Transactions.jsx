@@ -158,10 +158,30 @@ export default function TransactionsPage() {
     {},
   );
 
-  const totalAccountBalance = accounts.reduce(
-    (total, account) => total + Number(account.balance || 0),
+  function isLiabilityAccount(account) {
+    const accountLabel = `${account.name || ""} ${account.type || ""}`.toLowerCase();
+    const liabilityWords = ["credit", "loan", "debt", "mortgage"];
+
+    return liabilityWords.some((word) => accountLabel.includes(word));
+  }
+
+  const totalAssets = accounts.reduce(
+    (total, account) =>
+      isLiabilityAccount(account)
+        ? total
+        : total + Number(account.balance || 0),
     0,
   );
+
+  const totalDebt = accounts.reduce(
+    (total, account) =>
+      isLiabilityAccount(account)
+        ? total + Math.abs(Number(account.balance || 0))
+        : total,
+    0,
+  );
+
+  const netWorth = totalAssets - totalDebt;
 
   return (
     <section className="mx-auto w-full max-w-5xl p-4">
@@ -176,9 +196,17 @@ export default function TransactionsPage() {
         <div className="mb-4 flex items-end justify-between gap-4">
           <div>
             <h2 className="text-2xl font-bold">Accounts</h2>
-            <p className="mt-1 text-sm text-(--text)">
-              Total balance: ${totalAccountBalance.toFixed(2)}
-            </p>
+            <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+              <p>
+                Net worth: ${netWorth.toFixed(2)}
+              </p>
+              <p className="text-green-600">
+                Assets: ${totalAssets.toFixed(2)}
+              </p>
+              <p className="text-red-500">
+                Owed: ${totalDebt.toFixed(2)}
+              </p>
+            </div>
           </div>
 
           <button
@@ -296,6 +324,7 @@ export default function TransactionsPage() {
                 <option value="cash">Cash</option>
                 <option value="investment">Investment</option>
                 <option value="credit">Credit card</option>
+                <option value="loan">Loan</option>
               </select>
 
               <input
