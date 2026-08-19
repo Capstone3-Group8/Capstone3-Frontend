@@ -26,7 +26,7 @@ export default function TransactionsPage() {
     account_id: "",
     category_id: "",
     amount: "",
-    type: "Withdrawal",
+    type: "withdrawal",
     date: "",
     description: "",
   });
@@ -477,8 +477,8 @@ export default function TransactionsPage() {
                 onChange={handleChange}
                 className="rounded border border-(--border) bg-(--bg) p-2"
               >
-                <option value="Deposit">Deposit</option>
-                <option value="Withdrawal">Withdrawal</option>
+                <option value="deposit">Deposit</option>
+                <option value="withdrawal">Withdrawal</option>
               </select>
 
               <input
