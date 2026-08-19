@@ -4,7 +4,6 @@ import { getAccounts } from "../api/accounts";
 import { getCategories } from "../api/categories";
 
 export default function TransactionsPage() {
-  const [transaction, setTransaction] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [accounts, setAccounts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -66,7 +65,7 @@ export default function TransactionsPage() {
       });
 
       setTransactions((currentTransactions) => [
-        newTx,
+        newTransaction,
         ...currentTransactions,
       ]);
 
