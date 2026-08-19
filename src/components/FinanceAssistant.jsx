@@ -8,15 +8,18 @@ const suggestedQuestions = [
 ];
 
 export default function FinanceAssistant({
+    userId,
   financialData,
   hasTransactions,
 }) {
+ const storageKey =
+    `financeAssistantMessages:${userId || "guest"}`;
+
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState(() => {
   try {
-    const savedMessages = sessionStorage.getItem(
-      "financeAssistantMessages",
-    );
+    const savedMessages =
+      sessionStorage.getItem(storageKey);
 
     return savedMessages ? JSON.parse(savedMessages) : [];
   } catch {
@@ -28,10 +31,10 @@ export default function FinanceAssistant({
 
   useEffect(() => {
   sessionStorage.setItem(
-    "financeAssistantMessages",
+    storageKey,
     JSON.stringify(messages),
   );
-}, [messages]);
+}, [messages, storageKey]);
 
   async function askQuestion(questionToAsk) {
     const cleanedQuestion = questionToAsk.trim();
@@ -103,8 +106,8 @@ export default function FinanceAssistant({
             key={`${message.role}-${index}`}
             className={
               message.role === "user"
-                ? "ml-auto max-w-4/5 rounded-lg bg-(--accent) px-4 py-3 text-white"
-                : "mr-auto max-w-4/5 rounded-lg bg-(--accent-bg) px-4 py-3"
+                ? "ml-auto max-w-4/5 rounded-lg bg-(--primary) px-4 py-3 text-white"
+                : "mr-auto max-w-4/5 rounded-lg bg-(--primary-soft) px-4 py-3"
             }
           >
             <p className="text-xs font-semibold">
@@ -129,7 +132,7 @@ export default function FinanceAssistant({
             type="button"
             onClick={() => askQuestion(suggestedQuestion)}
             disabled={isLoading || !hasTransactions}
-            className="rounded-full border border-(--border) px-3 py-1 text-sm hover:bg-(--accent-bg) disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-full border border-(--border) px-3 py-1 text-sm hover:bg-(--primary-soft) disabled:cursor-not-allowed disabled:opacity-50"
           >
             {suggestedQuestion}
           </button>
@@ -157,7 +160,7 @@ export default function FinanceAssistant({
             !hasTransactions ||
             !question.trim()
           }
-          className="rounded-md bg-(--accent) px-4 py-2 font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
+          className="primary-btn disabled:cursor-not-allowed disabled:opacity-50"
         >
           Send
         </button>
