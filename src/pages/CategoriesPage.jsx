@@ -21,14 +21,14 @@ export default function CategoryPage() {
   const [budgetAnalysis, setBudgetAnalysis] = useState([]);
   // Load the categories once, when the page first appears.
   useEffect(() => {
-  getCategories().then((cats) => {
-    setCategories(cats);
-    setLoading(false);
-  });
-}, []);
-useEffect(() => {
-  getBudgetAnalysis(12).then(setBudgetAnalysis);
-}, []);
+    getCategories().then((cats) => {
+      setCategories(cats);
+      setLoading(false);
+    });
+  }, []);
+  useEffect(() => {
+    getBudgetAnalysis(12).then(setBudgetAnalysis);
+  }, []);
 
   // Create a category on the server, then add the returned row to the list on screen.
   async function handleCreate(e) {
@@ -46,22 +46,24 @@ useEffect(() => {
       setError(err.message);
     }
   }
-  
+
   // Delete on the server, then remove it from the list.
   async function handleDelete(id) {
-      try {
-          await deleteCategory(id);
-          setCategories(categories.filter((c) => c.id !== id));
-        } catch (error) {
-            setError(error.message);
-        }
+    try {
+      await deleteCategory(id);
+      setCategories(categories.filter((c) => c.id !== id));
+    } catch (error) {
+      setError(error.message);
     }
-    
-    if (loading) return <p>Loading categories…</p>;
+  }
+
+  if (loading) return <p>Loading categories…</p>;
 
   return (
     <section>
-      <h1 className="mb-6 text-3xl font-semibold text-(--text-h)">Categories</h1>
+      <h1 className="mb-6 text-3xl font-semibold text-(--text-h)">
+        Categories
+      </h1>
 
       {/* Show any error instead of failing silently. */}
       {error && (
@@ -101,7 +103,7 @@ useEffect(() => {
         </button>
       </form>
 
-            {/* Empty state vs. the list */}
+      {/* Empty state vs. the list */}
       {categories.length === 0 ? (
         <p>No categories yet. Add one above.</p>
       ) : (
@@ -125,14 +127,13 @@ useEffect(() => {
           ))}
         </ul>
       )}
-      <h2 className="mt-10 mb-4 text-2xl font-semibold">Set Category Budgets</h2>
+      <h2 className="mt-10 mb-4 text-2xl font-semibold">
+        Set Category Budgets
+      </h2>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {categories.map((cat) => (
-          <div
-            key={cat.id}
-            className="rounded-lg border border-(--border) p-5"
-          >
+          <div key={cat.id} className="rounded-lg border border-(--border) p-5">
             <p className="text-sm">{cat.name}</p>
 
             <input
@@ -141,13 +142,7 @@ useEffect(() => {
               defaultValue={cat.budget}
               onBlur={(e) => {
                 const newBudget = Number(e.target.value);
-
-                fetch(`/api/categories/${cat.id}`, {
-                  method: "PATCH",
-                  headers: { "Content-Type": "application/json" },
-                  credentials: "include",
-                  body: JSON.stringify({ budget: newBudget }),
-                })
+                updateCategory(cat.id, { budget: newBudget })
                   .then(() => {
                     getCategories().then(setCategories);
                   })
@@ -189,9 +184,7 @@ useEffect(() => {
               Total Spent: ${item.total_spent_for_period.toFixed(2)}
             </p>
 
-            <p>
-              Allowed Budget: ${item.total_budget_for_period.toFixed(2)}
-            </p>
+            <p>Allowed Budget: ${item.total_budget_for_period.toFixed(2)}</p>
 
             <p
               className={`mt-2 font-semibold ${
