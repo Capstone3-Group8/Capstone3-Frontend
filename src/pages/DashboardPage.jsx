@@ -145,30 +145,36 @@ export default function DashboardPage() {
         </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="rounded-lg border border-(--border) p-5">
-          <p className="text-sm">Total Income</p>
-          <p className="mt-2 text-3xl font-semibold text-green-400">
+        <div className="rounded-lg border border-(--border) bg-(--panel) p-5">
+          <p className="text-sm font-medium !text-(--muted)">Total Income</p>
+          <p className="mt-2 text-3xl font-bold !text-green-600">
             ${totalIncome.toFixed(2)}
           </p>
         </div>
 
-        <div className="rounded-lg border border-(--border) p-5">
-          <p className="text-sm">Total Expenses</p>
-          <p className="mt-2 text-3xl font-semibold text-red-400">
+        <div className="rounded-lg border border-(--border) bg-(--panel) p-5">
+          <p className="text-sm font-medium !text-(--muted)">Total Expenses</p>
+          <p className="mt-2 text-3xl font-bold !text-red-500">
             ${totalExpenses.toFixed(2)}
           </p>
         </div>
 
-        <div className="rounded-lg border border-(--border) p-5">
-          <p className="text-sm">Current Balance</p>
-          <p className="mt-2 text-3xl font-semibold text-(--text-h)">
+        <div className="rounded-lg border border-(--border) bg-(--panel) p-5">
+          <p className="text-sm font-medium !text-(--muted)">Current Balance</p>
+          <p
+            className={`mt-2 text-3xl font-bold ${
+              currentBalance < 0 ? "!text-red-500" : "!text-(--text-h)"
+            }`}
+          >
             ${currentBalance.toFixed(2)}
           </p>
         </div>
 
-        <div className="rounded-lg border border-(--border) p-5">
-          <p className="text-sm">Average Transaction</p>
-          <p className="mt-2 text-3xl font-semibold text-(--text-h)">
+        <div className="rounded-lg border border-(--border) bg-(--panel) p-5">
+          <p className="text-sm font-medium !text-(--muted)">
+            Average Transaction
+          </p>
+          <p className="mt-2 text-3xl font-bold !text-(--text-h)">
             ${averageTransaction.toFixed(2)}
           </p>
         </div>

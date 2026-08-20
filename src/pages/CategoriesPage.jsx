@@ -19,6 +19,7 @@ export default function CategoryPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [budgetAnalysis, setBudgetAnalysis] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   // Load the categories once, when the page first appears.
   useEffect(() => {
     getCategories().then((cats) => {
@@ -43,6 +44,7 @@ export default function CategoryPage() {
       setCategories([newCategory, ...categories]);
       setCategory({ name: "", type: "", budget: "" });
       setError(null);
+      setIsModalOpen(false);
     } catch (err) {
       setError(err.message);
     }
@@ -58,13 +60,32 @@ export default function CategoryPage() {
     }
   }
 
-  if (loading) return <p>Loading categories…</p>;
+  if (loading) {
+    return (
+      <p className="mx-auto w-full max-w-5xl p-4 text-(--text)">
+        Loading categories…
+      </p>
+    );
+  }
 
   return (
-    <section>
-      <h1 className="mb-6 text-3xl font-semibold text-(--text-h)">
-        Categories
-      </h1>
+    <section className="mx-auto w-full max-w-5xl p-4">
+      <div className="mb-8 flex items-end justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-(--text-h)">Categories & Budgets</h1>
+          <p className="mt-1 text-(--text)">
+            Organize your transactions and set monthly spending goals
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setIsModalOpen(true)}
+          className="primary-btn shrink-0"
+        >
+          + Add category
+        </button>
+      </div>
 
       {/* Show any error instead of failing silently. */}
       {error && (
@@ -73,98 +94,171 @@ export default function CategoryPage() {
         </p>
       )}
 
-      {/* Add-an-account form */}
-      <form onSubmit={handleCreate} className="mb-6 flex gap-2">
-        <input
-          value={category.name}
-          onChange={(e) => setCategory({ ...category, name: e.target.value })}
-          placeholder="Name"
-          className="flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2"
-        />
-        <select
-          value={category.type}
-          onChange={(e) => setCategory({ ...category, type: e.target.value })}
-          className="flex-1 rounded-md border border-(--border) bg-(--bg) px-3 py-2"
-        >
-          <option value="">Select type</option>
-          <option value="Income">Income</option>
-          <option value="Expense">Expense</option>
-        </select>
-        <input
-          value={category.budget}
-          onChange={(e) => setCategory({ ...category, budget: e.target.value })}
-          placeholder="Budget"
-          className="flex-1 rounded-md border border-(--border) bg-transparent px-3 py-2"
-        />
-        <button
-          type="submit"
-          className="rounded-md btn-purple px-4 py-2 font-medium text-white"
-        >
-          Add
-        </button>
-      </form>
-
-      {/* Empty state vs. the list */}
-      {categories.length === 0 ? (
-        <p>No categories yet. Add one above.</p>
-      ) : (
-        <ul className="flex flex-col gap-2">
-          {categories.map((category) => (
-            <li
-              key={category.id}
-              className="flex items-center gap-3 rounded-md border border-(--border) px-4 py-3"
-            >
-              <Link to={`/categories/${category.id}`} className="flex-1">
-                {category.name} — {category.type} — ${category.budget}
-              </Link>
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+          <div className="w-full max-w-xl rounded-xl border border-(--border) bg-(--bg) p-6 shadow-2xl">
+            <div className="mb-5 flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-bold text-(--text-h)">
+                  Add a category
+                </h2>
+                <p className="mt-1 text-(--text)">
+                  Create a category and choose its monthly budget.
+                </p>
+              </div>
 
               <button
-                onClick={() => handleDelete(category.id)}
-                className="text-sm text-red-500 hover:underline"
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="text-2xl text-(--text) hover:text-(--text-h)"
+                aria-label="Close category form"
               >
-                Delete
+                ×
               </button>
-            </li>
-          ))}
-        </ul>
-      )}
-      <h2 className="mt-10 mb-4 text-2xl font-semibold">
-        Set Category Budgets
-      </h2>
+            </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {categories.map((cat) => (
-          <div key={cat.id} className="rounded-lg border border-(--border) p-5">
-            <p className="text-sm">{cat.name}</p>
+            <form onSubmit={handleCreate} className="flex flex-col gap-3">
+              <input
+                value={category.name}
+                onChange={(e) =>
+                  setCategory({ ...category, name: e.target.value })
+                }
+                placeholder="Category name"
+                className="rounded border border-(--border) bg-(--bg) p-3"
+                required
+              />
 
-            <input
-              type="number"
-              placeholder="Enter monthly budget"
-              defaultValue={cat.budget}
-              onBlur={(e) => {
-                const newBudget = Number(e.target.value);
-                updateCategory(cat.id, { budget: newBudget })
-                  .then(() => {
-                    getCategories().then(setCategories);
-                  })
-                  .catch(console.error);
-              }}
-              className="mt-2 w-full rounded-md border border-(--border) bg-transparent px-3 py-2"
-            />
+              <select
+                value={category.type}
+                onChange={(e) =>
+                  setCategory({ ...category, type: e.target.value })
+                }
+                className="rounded border border-(--border) bg-(--bg) p-3"
+                required
+              >
+                <option value="">Select type</option>
+                <option value="Income">Income</option>
+                <option value="Expense">Expense</option>
+              </select>
+
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                value={category.budget}
+                onChange={(e) =>
+                  setCategory({ ...category, budget: e.target.value })
+                }
+                placeholder="Monthly budget"
+                className="rounded border border-(--border) bg-(--bg) p-3"
+              />
+
+              <button type="submit" className="primary-btn">
+                Add Category
+              </button>
+            </form>
           </div>
-        ))}
+        </div>
+      )}
+
+      <div className="mb-4">
+        <h2 className="text-2xl font-bold text-(--text-h)">Monthly budgets</h2>
+        <p className="mt-1 text-sm text-(--text)">
+          Update a budget, then click outside the field to save it.
+        </p>
       </div>
 
-      <h2 className="mt-10 mb-4 text-2xl font-semibold">Budget Analysis</h2>
+      {categories.length === 0 ? (
+        <div className="rounded-xl border border-(--border) p-8 text-center">
+          <p className="font-semibold text-(--text-h)">No categories yet</p>
+          <p className="mt-1 text-sm text-(--text)">
+            Add your first category to start organizing transactions.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {categories.map((cat) => {
+            const isIncome = cat.type === "Income";
 
-      <div className="flex items-center gap-4 mb-4">
+            return (
+              <article
+                key={cat.id}
+                className="rounded-xl border border-(--border) bg-(--panel) p-5 transition hover:border-(--primary)"
+              >
+                <div className="mb-4 flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <Link
+                      to={`/categories/${cat.id}`}
+                      className="truncate text-lg font-semibold text-(--text-h) hover:text-(--primary)"
+                    >
+                      {cat.name}
+                    </Link>
+                    <p
+                      className={`mt-1 text-sm font-medium ${
+                        isIncome ? "text-green-500" : "text-red-400"
+                      }`}
+                    >
+                      {cat.type}
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(cat.id)}
+                    className="shrink-0 text-sm text-red-500 hover:underline"
+                  >
+                    Delete
+                  </button>
+                </div>
+
+                <label
+                  htmlFor={`budget-${cat.id}`}
+                  className="text-sm text-(--text)"
+                >
+                  Monthly budget
+                </label>
+                <div className="relative mt-2">
+                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-(--text)">
+                    $
+                  </span>
+                  <input
+                    id={`budget-${cat.id}`}
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="0.00"
+                    defaultValue={cat.budget}
+                    onBlur={(e) => {
+                      const newBudget = Number(e.target.value);
+                      updateCategory(cat.id, { budget: newBudget })
+                        .then(() => getCategories())
+                        .then(setCategories)
+                        .catch((err) => setError(err.message));
+                    }}
+                    className="w-full rounded-lg border border-(--border) bg-(--bg) py-2 pr-3 pl-7 outline-none focus:border-(--primary)"
+                  />
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
+
+      <div className="mt-10 mb-4">
+        <h2 className="text-2xl font-bold text-(--text-h)">Budget analysis</h2>
+        <p className="mt-1 text-sm text-(--text)">
+          Compare your expense-category spending with your planned budgets.
+        </p>
+      </div>
+
+      <div className="mb-4 flex items-center gap-4">
         <span>Analyze last</span>
         <select
           onChange={(e) => {
             const months = Number(e.target.value);
             getBudgetAnalysis(months).then(setBudgetAnalysis);
           }}
-          className="rounded-md border border-(--border) bg-transparent px-3 py-2"
+          className="rounded-md border border-(--border) bg-(--panel) px-3 py-2"
         >
           <option value="1">1 month</option>
           <option value="3">3 months</option>
@@ -177,15 +271,19 @@ export default function CategoryPage() {
         {budgetAnalysis.map((item) => (
           <div
             key={item.category_id}
-            className="rounded-lg border border-(--border) p-5"
+            className="rounded-xl border border-(--border) bg-(--panel) p-5"
           >
-            <p className="text-sm">{item.category_name}</p>
+            <p className="font-semibold text-(--text-h)">
+              {item.category_name}
+            </p>
 
-            <p className="mt-2">
+            <p className="mt-3 text-sm text-(--text)">
               Total Spent: ${item.total_spent_for_period.toFixed(2)}
             </p>
 
-            <p>Allowed Budget: ${item.total_budget_for_period.toFixed(2)}</p>
+            <p className="text-sm text-(--text)">
+              Allowed Budget: ${item.total_budget_for_period.toFixed(2)}
+            </p>
 
             <p
               className={`mt-2 font-semibold ${

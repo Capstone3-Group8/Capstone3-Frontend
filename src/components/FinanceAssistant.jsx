@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { askFinancialQuestion } from "../api/financialInsights";
 
 const suggestedQuestions = [
@@ -28,6 +28,7 @@ export default function FinanceAssistant({
 });
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const chatContainerRef = useRef(null);
 
   useEffect(() => {
   sessionStorage.setItem(
@@ -35,6 +36,17 @@ export default function FinanceAssistant({
     JSON.stringify(messages),
   );
 }, [messages, storageKey]);
+
+  useEffect(() => {
+    const chatContainer = chatContainerRef.current;
+
+    if (chatContainer) {
+      chatContainer.scrollTo({
+        top: chatContainer.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [messages, isLoading]);
 
   async function askQuestion(questionToAsk) {
     const cleanedQuestion = questionToAsk.trim();
@@ -93,7 +105,10 @@ export default function FinanceAssistant({
         </p>
       </div>
 
-      <div className="mt-5 min-h-48 space-y-3 overflow-y-auto rounded-md border border-(--border) p-4 lg:min-h-0 lg:flex-1">
+      <div
+        ref={chatContainerRef}
+        className="mt-5 min-h-48 space-y-3 overflow-y-auto rounded-md border border-(--border) p-4 lg:min-h-0 lg:flex-1"
+      >
         {messages.length === 0 && (
           <p className="text-sm opacity-70">
             Ask a question below to get an answer based on your
@@ -110,11 +125,21 @@ export default function FinanceAssistant({
                 : "mr-auto max-w-4/5 rounded-lg bg-(--primary-soft) px-4 py-3"
             }
           >
-            <p className="text-xs font-semibold">
+            <p
+              className={`text-xs font-semibold ${
+                message.role === "user" ? "!text-white" : ""
+              }`}
+            >
               {message.role === "user" ? "You" : "Finance Assistant"}
             </p>
 
-            <p className="mt-1 text-sm">{message.text}</p>
+            <p
+              className={`mt-1 text-sm ${
+                message.role === "user" ? "!text-white" : ""
+              }`}
+            >
+              {message.text}
+            </p>
           </div>
         ))}
 
