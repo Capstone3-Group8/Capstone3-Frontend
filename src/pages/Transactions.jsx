@@ -14,6 +14,7 @@ export default function TransactionsPage() {
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [accountForm, setAccountForm] = useState({
     name: "",
@@ -165,7 +166,27 @@ export default function TransactionsPage() {
     }
   }
 
-  const sortedTransactions = [...transactions].sort(
+  const normalizedSearchTerm = searchTerm.trim().toLowerCase();
+
+  const filteredTransactions = transactions.filter((transaction) => {
+    if (!normalizedSearchTerm) return true;
+
+    const searchableValues = [
+      transaction.description,
+      transaction.type,
+      transaction.amount,
+      getCategoryName(transaction.category_id),
+      getAccountName(transaction.account_id),
+    ];
+
+    return searchableValues.some((value) =>
+      String(value ?? "")
+        .toLowerCase()
+        .includes(normalizedSearchTerm),
+    );
+  });
+
+  const sortedTransactions = [...filteredTransactions].sort(
     (a, b) => new Date(b.date) - new Date(a.date),
   );
 
@@ -242,13 +263,13 @@ export default function TransactionsPage() {
           <div>
             <h2 className="text-2xl font-bold">Accounts</h2>
             <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm">
-              <p>
+              <p className="font-semibold !text-(--text-h)">
                 Net worth: ${netWorth.toFixed(2)}
               </p>
-              <p className="text-green-600">
+              <p className="font-medium !text-green-600">
                 Assets: ${totalAssets.toFixed(2)}
               </p>
-              <p className="text-red-500">
+              <p className="font-medium !text-red-500">
                 Owed: ${totalDebt.toFixed(2)}
               </p>
             </div>
@@ -264,7 +285,7 @@ export default function TransactionsPage() {
         </div>
 
         {accounts.length === 0 ? (
-          <div className="rounded-xl border border-(--border) p-6 text-center">
+          <div className="rounded-xl border border-(--border) bg-(--panel) p-6 text-center">
             <p className="font-semibold text-(--text-h)">No accounts yet</p>
             <p className="mt-1 text-sm">Add an account before recording transactions.</p>
           </div>
@@ -273,19 +294,19 @@ export default function TransactionsPage() {
             {accounts.map((account) => (
               <article
                 key={account.id}
-                className="flex items-center justify-between gap-4 rounded-xl border border-(--border) p-4"
+                className="flex items-center justify-between gap-4 rounded-xl border border-(--border) bg-(--panel) p-4"
               >
                 <div className="min-w-0">
-                  <p className="truncate font-semibold text-(--text-h)">
+                  <p className="truncate font-semibold !text-(--text-h)">
                     {account.name}
                   </p>
-                  <p className="text-sm capitalize text-(--text)">
+                  <p className="text-sm capitalize !text-(--muted)">
                     {[account.bank_name, account.type].filter(Boolean).join(" · ")}
                   </p>
-                  <p className="mt-2 text-xl font-bold text-(--text-h)">
+                  <p className="mt-2 text-xl font-bold !text-(--text-h)">
                     ${getCurrentAccountBalance(account).toFixed(2)}
                   </p>
-                  <p className="text-xs text-(--muted)">
+                  <p className="text-xs !text-(--muted)">
                     {isLiabilityAccount(account) ? "Amount owed" : "Current balance"}
                   </p>
                 </div>
@@ -510,13 +531,36 @@ export default function TransactionsPage() {
         </div>
       )}
 
+      {transactions.length > 0 && (
+        <div className="mb-4">
+          <label htmlFor="transaction-search" className="sr-only">
+            Search transactions
+          </label>
+          <input
+            id="transaction-search"
+            type="search"
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+            placeholder="Search category, account, amount, type, or note..."
+            className="w-full rounded-xl border border-(--border) bg-(--panel) px-4 py-3 text-(--text-h) outline-none transition focus:border-(--primary)"
+          />
+        </div>
+      )}
+
       {transactions.length === 0 ? (
-        <div className="rounded-xl border border-(--border) p-8 text-center">
+        <div className="rounded-xl border border-(--border) bg-(--panel) p-8 text-center">
           <p className="font-semibold text-(--text-h)">No transactions yet</p>
           <p className="mt-1 text-sm">Add your first transaction to get started.</p>
         </div>
+      ) : filteredTransactions.length === 0 ? (
+        <div className="rounded-xl border border-(--border) bg-(--panel) p-8 text-center">
+          <p className="font-semibold text-(--text-h)">No matching transactions</p>
+          <p className="mt-1 text-sm text-(--text)">
+            Try a different category, account, amount, type, or note.
+          </p>
+        </div>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-(--border)">
+        <div className="overflow-hidden rounded-xl border border-(--border) bg-(--panel)">
           {Object.entries(groupedTransactions).map(([date, dateTransactions]) => {
             const dailyTotal = dateTransactions.reduce((total, tx) => {
               const amount = Number(tx.amount);
@@ -561,10 +605,10 @@ export default function TransactionsPage() {
                           </div>
 
                           <div className="min-w-0">
-                            <p className="truncate font-semibold text-(--text-h)">
+                            <p className="truncate font-semibold !text-(--text-h)">
                               {tx.description || tx.type}
                             </p>
-                            <p className="text-sm text-(--text)">
+                            <p className="text-sm !text-(--muted)">
                               {getCategoryName(tx.category_id)} ·{" "}
                               {getAccountName(tx.account_id)}
                             </p>
@@ -574,7 +618,7 @@ export default function TransactionsPage() {
                         <div className="flex shrink-0 items-center gap-4">
                           <p
                             className={`font-semibold ${
-                              isDeposit ? "text-green-500" : "text-red-400"
+                              isDeposit ? "!text-green-600" : "!text-red-500"
                             }`}
                           >
                             {isDeposit ? "+" : "−"}$
@@ -584,10 +628,23 @@ export default function TransactionsPage() {
                           <button
                             type="button"
                             onClick={() => handleDeleteTransaction(tx.id)}
-                            className="text-sm text-red-500 hover:underline"
+                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-(--muted) hover:bg-red-500/10 hover:text-red-500"
                             aria-label={`Delete ${tx.description || "transaction"}`}
+                            title="Delete transaction"
                           >
-                            Delete
+                            <svg
+                              aria-hidden="true"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              className="h-4 w-4"
+                            >
+                              <path d="M3 6h18" />
+                              <path d="M8 6V4h8v2" />
+                              <path d="M19 6l-1 14H6L5 6" />
+                              <path d="M10 11v5M14 11v5" />
+                            </svg>
                           </button>
                         </div>
                       </li>
