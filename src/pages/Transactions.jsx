@@ -3,9 +3,11 @@ import {
   createTransaction,
   deleteTransaction,
   getTransactions,
+  updateTransaction,
 } from "../api/transactions";
 import { createAccount, deleteAccount, getAccounts } from "../api/accounts";
 import { getCategories } from "../api/categories";
+import { categorizeTransactions } from "../api/financialInsights";
 
 export default function TransactionsPage() {
   const [transactions, setTransactions] = useState([]);
@@ -15,6 +17,7 @@ export default function TransactionsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isCategorizing, setIsCategorizing] = useState(false);
 
   const [accountForm, setAccountForm] = useState({
     name: "",
@@ -128,6 +131,51 @@ export default function TransactionsPage() {
     } catch (err) {
       console.error(err);
       setError(err.message || "Could not delete transaction");
+    }
+  }
+
+  async function handleAutoCategorize() {
+    if (transactions.length === 0 || categories.length === 0) return;
+
+    setIsCategorizing(true);
+    setError("");
+
+    try {
+      const result = await categorizeTransactions(
+        transactions.map((transaction) => ({
+          id: transaction.id,
+          description: transaction.description,
+          amount: transaction.amount,
+          type: transaction.type,
+        })),
+        categories.map((category) => ({
+          name: category.name,
+          type: category.type,
+        })),
+      );
+
+      const categoryByName = new Map(
+        categories.map((category) => [category.name.toLowerCase(), category]),
+      );
+
+      const updates = result.data
+        .map((transaction) => ({
+          transaction,
+          category: transaction.categoryName
+            ? categoryByName.get(transaction.categoryName.toLowerCase())
+            : null,
+        }))
+        .filter(({ category }) => category)
+        .map(({ transaction, category }) =>
+          updateTransaction(transaction.id, { category_id: category.id }),
+        );
+
+      await Promise.all(updates);
+      setTransactions(await getTransactions());
+    } catch (err) {
+      setError(err.message || "Could not categorize transactions");
+    } finally {
+      setIsCategorizing(false);
     }
   }
 
@@ -324,7 +372,7 @@ export default function TransactionsPage() {
         )}
       </section>
 
-      <div className="mb-6 flex items-center justify-between gap-4">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold">Transactions</h2>
           <p className="mt-1 text-(--text)">
@@ -338,6 +386,15 @@ export default function TransactionsPage() {
           className="primary-btn shrink-0"
         >
           + Add transaction
+        </button>
+
+        <button
+          type="button"
+          onClick={handleAutoCategorize}
+          disabled={isCategorizing || transactions.length === 0}
+          className="primary-btn shrink-0 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {isCategorizing ? "Categorizing..." : "Auto-categorize"}
         </button>
       </div>
 

@@ -7,6 +7,7 @@ import {
   deleteCategory,
 } from "../api/categories";
 import { getBudgetAnalysis } from "../api/budgetAnalysis";
+import { askFinancialQuestion } from "../api/financialInsights";
 // This page shows the full CRUD loop against the backend:
 // read the list, create a category, and delete it.
 export default function CategoryPage() {
@@ -20,6 +21,8 @@ export default function CategoryPage() {
   const [error, setError] = useState(null);
   const [budgetAnalysis, setBudgetAnalysis] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [aiExplanations, setAiExplanations] = useState({});
+  const [explainingCategoryId, setExplainingCategoryId] = useState(null);
   // Load the categories once, when the page first appears.
   useEffect(() => {
     getCategories().then((cats) => {
@@ -57,6 +60,39 @@ export default function CategoryPage() {
       setCategories(categories.filter((c) => c.id !== id));
     } catch (error) {
       setError(error.message);
+    }
+  }
+
+  async function handleExplainBudget(item) {
+    setExplainingCategoryId(item.category_id);
+    setError(null);
+
+    try {
+      const result = await askFinancialQuestion(
+        `Explain whether I stayed within my ${item.category_name} budget. State clearly that I ${
+          item.stayed_within_budget ? "stayed within" : "exceeded"
+        } the budget, using the spending and budget amounts provided.`,
+        {
+          dateRange: { start: "the selected period", end: "today" },
+          totalIncome: 0,
+          totalExpenses: item.total_spent_for_period,
+          currentBalance:
+            item.total_budget_for_period - item.total_spent_for_period,
+          averageTransaction: item.total_spent_for_period,
+          expensesByCategory: [
+            { name: item.category_name, amount: item.total_spent_for_period },
+          ],
+        },
+      );
+
+      setAiExplanations((current) => ({
+        ...current,
+        [item.category_id]: result.answer,
+      }));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setExplainingCategoryId(null);
     }
   }
 
@@ -294,6 +330,23 @@ export default function CategoryPage() {
                 ? "Stayed within budget"
                 : "Exceeded budget"}
             </p>
+
+            <button
+              type="button"
+              onClick={() => handleExplainBudget(item)}
+              disabled={explainingCategoryId === item.category_id}
+              className="mt-3 text-sm text-(--primary) hover:underline disabled:opacity-50"
+            >
+              {explainingCategoryId === item.category_id
+                ? "Asking AI..."
+                : "Explain with AI"}
+            </button>
+
+            {aiExplanations[item.category_id] && (
+              <p className="mt-3 rounded-md bg-(--primary-soft) px-3 py-2 text-sm">
+                {aiExplanations[item.category_id]}
+              </p>
+            )}
           </div>
         ))}
       </div>
