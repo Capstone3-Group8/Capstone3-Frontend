@@ -40,7 +40,7 @@ export default function PlaidLinkPage() {
 
     return (
     <>
-        <button onClick={() => open()} disabled ={!ready} className="rounded-md bg-(--accent) px-4 py-2 font-medium text-white">
+        <button onClick={() => open()} disabled ={!ready} className="primary-btn">
             Connect bank account
         </button>
         <button onClick={handleSyncTransactions} className="ml-3 rounded-md border border-(--border) px-4 py-2 font-medium">
