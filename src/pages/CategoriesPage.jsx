@@ -32,7 +32,7 @@ export default function CategoryPage() {
   }, []);
 
   useEffect(() => {
-    getBudgetAnalysis(12).then(setBudgetAnalysis);
+    getBudgetAnalysis(1).then(setBudgetAnalysis);
   }, [categories]);
 
   // Create a category on the server, then add the returned row to the list on screen.
@@ -69,9 +69,11 @@ export default function CategoryPage() {
 
     try {
       const result = await askFinancialQuestion(
-        `Explain whether I stayed within my ${item.category_name} budget. State clearly that I ${
-          item.stayed_within_budget ? "stayed within" : "exceeded"
-        } the budget, using the spending and budget amounts provided.`,
+        `Explain my ${item.category_name} budget in simple language. I spent $${Number(
+          item.total_spent_for_period,
+        ).toFixed(2)} and my allowed budget was $${Number(
+          item.total_budget_for_period,
+        ).toFixed(2)}. State clearly whether I stayed within or exceeded my budget.`,
         {
           dateRange: { start: "the selected period", end: "today" },
           totalIncome: 0,
@@ -229,13 +231,23 @@ export default function CategoryPage() {
                     >
                       {cat.name}
                     </Link>
-                    <p
-                      className={`mt-1 text-sm font-medium ${
+                    <select
+                      aria-label={`Type for ${cat.name}`}
+                      value={cat.type}
+                      onChange={(e) => {
+                        const newType = e.target.value;
+                        updateCategory(cat.id, { type: newType })
+                          .then(() => getCategories())
+                          .then(setCategories)
+                          .catch((err) => setError(err.message));
+                      }}
+                      className={`mt-1 rounded border-none bg-transparent text-sm font-medium outline-none ${
                         isIncome ? "text-green-500" : "text-red-400"
                       }`}
                     >
-                      {cat.type}
-                    </p>
+                      <option value="Income">Income</option>
+                      <option value="Expense">Expense</option>
+                    </select>
                   </div>
 
                   <button
