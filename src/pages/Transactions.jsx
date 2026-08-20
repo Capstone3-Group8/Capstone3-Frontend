@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import {
+  getTransactions,
   createTransaction,
   deleteTransaction,
-  getTransactions,
   updateTransaction,
 } from "../api/transactions";
-import { createAccount, deleteAccount, getAccounts } from "../api/accounts";
+import {
+  getAccounts,
+  createAccount,
+  deleteAccount,
+} from "../api/accounts";
 import { getCategories } from "../api/categories";
 import { categorizeTransactions } from "../api/financialInsights";
 
@@ -73,6 +77,33 @@ export default function TransactionsPage() {
 
     return account?.name || "Unknown account";
   }
+
+  function isLiabilityAccount(account) {
+    return ["credit", "loan"].includes(account.type?.toLowerCase());
+  }
+
+  function getCurrentAccountBalance(account) {
+    const accountTransactions = transactions.filter(
+      (transaction) => Number(transaction.account_id) === Number(account.id),
+    );
+
+    return accountTransactions.reduce((balance, transaction) => {
+      const amount = Number(transaction.amount);
+      return transaction.type.toLowerCase() === "withdrawal"
+        ? balance - amount
+        : balance + amount;
+    }, Number(account.balance) || 0);
+  }
+
+  const totalAssets = accounts
+    .filter((account) => !isLiabilityAccount(account))
+    .reduce((total, account) => total + getCurrentAccountBalance(account), 0);
+
+  const totalDebt = accounts
+    .filter(isLiabilityAccount)
+    .reduce((total, account) => total + Math.abs(getCurrentAccountBalance(account)), 0);
+
+  const netWorth = totalAssets - totalDebt;
 
   async function handleCreateAccount(e) {
     e.preventDefault();
