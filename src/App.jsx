@@ -20,6 +20,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import { getMe, syncUser, logoutRequest } from './api/auth';
 import PlaidLinkPage from './pages/PlaidLinkPage';
+import LinkedAccountsPage from './pages/LinkedAccountsPage';
 
 // App does two things:
 //   1. maps every URL to a page
@@ -171,7 +172,8 @@ function App() {
         />
 
         {/*link to plaid */}
-        <Route path='link-bank' element={<PlaidLinkPage />} />
+        <Route path='/link-bank' element={<PlaidLinkPage />} />
+        <Route path='/linked-accounts' element={<LinkedAccountsPage />} />
 
         {/* Only reachable when logged in — ProtectedRoute redirects otherwise. */}
         { /* Protected route commented out per request (frontend only). */ }

@@ -26,3 +26,17 @@ export async function syncTransactions() {
   );
   return res.data;
 }
+
+export async function getPlaidAccounts() {
+    const res = await axios.get(`${BASE_URL}/api/plaid/accounts`,{
+        withCredentials: true,
+    });
+    return res.data
+}
+
+export async function getPlaidTransactions() {
+    const res = await axios.get(`${BASE_URL}/api/plaid/transactions`, {
+        withCredentials: true,
+    });
+    return res.data
+}
