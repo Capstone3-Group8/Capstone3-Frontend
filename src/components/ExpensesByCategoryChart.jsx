@@ -31,7 +31,7 @@ const renderCustomizedLabel = ({
 
 export default function ExpensesByCategoryChart({ data }) {
   return (
-    <div className="h-80 rounded-lg border border-(--border) p-5">
+    <div className="h-80 rounded-lg border border-(--border) bg-(--panel) p-5">
       <h2 className="mb-4 text-xl font-semibold text-(--text-h)">
         Expenses by Category
       </h2>

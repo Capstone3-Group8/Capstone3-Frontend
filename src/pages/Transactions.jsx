@@ -263,13 +263,13 @@ export default function TransactionsPage() {
           <div>
             <h2 className="text-2xl font-bold">Accounts</h2>
             <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm">
-              <p>
+              <p className="font-semibold !text-(--text-h)">
                 Net worth: ${netWorth.toFixed(2)}
               </p>
-              <p className="text-green-600">
+              <p className="font-medium !text-green-600">
                 Assets: ${totalAssets.toFixed(2)}
               </p>
-              <p className="text-red-500">
+              <p className="font-medium !text-red-500">
                 Owed: ${totalDebt.toFixed(2)}
               </p>
             </div>
@@ -285,7 +285,7 @@ export default function TransactionsPage() {
         </div>
 
         {accounts.length === 0 ? (
-          <div className="rounded-xl border border-(--border) p-6 text-center">
+          <div className="rounded-xl border border-(--border) bg-(--panel) p-6 text-center">
             <p className="font-semibold text-(--text-h)">No accounts yet</p>
             <p className="mt-1 text-sm">Add an account before recording transactions.</p>
           </div>
@@ -294,19 +294,19 @@ export default function TransactionsPage() {
             {accounts.map((account) => (
               <article
                 key={account.id}
-                className="flex items-center justify-between gap-4 rounded-xl border border-(--border) p-4"
+                className="flex items-center justify-between gap-4 rounded-xl border border-(--border) bg-(--panel) p-4"
               >
                 <div className="min-w-0">
-                  <p className="truncate font-semibold text-(--text-h)">
+                  <p className="truncate font-semibold !text-(--text-h)">
                     {account.name}
                   </p>
-                  <p className="text-sm capitalize text-(--text)">
+                  <p className="text-sm capitalize !text-(--muted)">
                     {[account.bank_name, account.type].filter(Boolean).join(" · ")}
                   </p>
-                  <p className="mt-2 text-xl font-bold text-(--text-h)">
+                  <p className="mt-2 text-xl font-bold !text-(--text-h)">
                     ${getCurrentAccountBalance(account).toFixed(2)}
                   </p>
-                  <p className="text-xs text-(--muted)">
+                  <p className="text-xs !text-(--muted)">
                     {isLiabilityAccount(account) ? "Amount owed" : "Current balance"}
                   </p>
                 </div>
@@ -548,19 +548,19 @@ export default function TransactionsPage() {
       )}
 
       {transactions.length === 0 ? (
-        <div className="rounded-xl border border-(--border) p-8 text-center">
+        <div className="rounded-xl border border-(--border) bg-(--panel) p-8 text-center">
           <p className="font-semibold text-(--text-h)">No transactions yet</p>
           <p className="mt-1 text-sm">Add your first transaction to get started.</p>
         </div>
       ) : filteredTransactions.length === 0 ? (
-        <div className="rounded-xl border border-(--border) p-8 text-center">
+        <div className="rounded-xl border border-(--border) bg-(--panel) p-8 text-center">
           <p className="font-semibold text-(--text-h)">No matching transactions</p>
           <p className="mt-1 text-sm text-(--text)">
             Try a different category, account, amount, type, or note.
           </p>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-(--border)">
+        <div className="overflow-hidden rounded-xl border border-(--border) bg-(--panel)">
           {Object.entries(groupedTransactions).map(([date, dateTransactions]) => {
             const dailyTotal = dateTransactions.reduce((total, tx) => {
               const amount = Number(tx.amount);
@@ -605,10 +605,10 @@ export default function TransactionsPage() {
                           </div>
 
                           <div className="min-w-0">
-                            <p className="truncate font-semibold text-(--text-h)">
+                            <p className="truncate font-semibold !text-(--text-h)">
                               {tx.description || tx.type}
                             </p>
-                            <p className="text-sm text-(--text)">
+                            <p className="text-sm !text-(--muted)">
                               {getCategoryName(tx.category_id)} ·{" "}
                               {getAccountName(tx.account_id)}
                             </p>
@@ -618,7 +618,7 @@ export default function TransactionsPage() {
                         <div className="flex shrink-0 items-center gap-4">
                           <p
                             className={`font-semibold ${
-                              isDeposit ? "text-green-500" : "text-red-400"
+                              isDeposit ? "!text-green-600" : "!text-red-500"
                             }`}
                           >
                             {isDeposit ? "+" : "−"}$
