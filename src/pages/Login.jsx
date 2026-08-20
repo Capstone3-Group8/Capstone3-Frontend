@@ -136,7 +136,7 @@ function Login({ setUser }) {
           <button
             type='submit'
             disabled={isLoading}
-            className='mt-2 rounded-md bg-(--accent) px-4 py-2.5 font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60'
+            className='primary-btn mt-2 w-full disabled:cursor-not-allowed disabled:opacity-60'
           >
             {isLoading ? 'Logging in…' : 'Log in'}
           </button>
@@ -153,7 +153,7 @@ function Login({ setUser }) {
         <button
           type='button'
           onClick={() => loginWithRedirect()}
-          className='w-full rounded-md border border-(--border) px-4 py-2.5 font-medium transition hover:text-(--text-h)'
+          className='secondary-btn w-full transition hover:text-(--text-h)'
         >
           Continue with Auth0
         </button>
@@ -162,7 +162,7 @@ function Login({ setUser }) {
           Don't have an account?{' '}
           <Link
             to='/signup'
-            className='font-medium text-(--accent) hover:underline'
+            className='font-medium !text-(--primary) hover:underline'
           >
             Sign up
           </Link>

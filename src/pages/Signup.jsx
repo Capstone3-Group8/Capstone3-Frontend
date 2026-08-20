@@ -162,7 +162,7 @@ function Signup({ setUser }) {
           <button
             type='submit'
             disabled={isLoading}
-            className='mt-2 rounded-md bg-(--accent) px-4 py-2.5 font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60'
+            className='primary-btn mt-2 w-full disabled:cursor-not-allowed disabled:opacity-60'
           >
             {isLoading ? 'Creating account…' : 'Create account'}
           </button>
@@ -179,7 +179,7 @@ function Signup({ setUser }) {
         <button
           type='button'
           onClick={() => loginWithRedirect()}
-          className='w-full rounded-md border border-(--border) px-4 py-2.5 font-medium transition hover:text-(--text-h)'
+          className='secondary-btn w-full transition hover:text-(--text-h)'
         >
           Continue with Auth0
         </button>
@@ -188,7 +188,7 @@ function Signup({ setUser }) {
           Already have an account?{' '}
           <Link
             to='/login'
-            className='font-medium text-(--accent) hover:underline'
+            className='font-medium !text-(--primary) hover:underline'
           >
             Log in
           </Link>
