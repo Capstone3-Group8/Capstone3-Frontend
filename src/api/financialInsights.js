@@ -49,3 +49,24 @@ export async function askFinancialQuestion(question, financialData) {
 
   return response.json();
 }
+
+export async function categorizeTransactions(transactions, categories) {
+  const response = await fetch(
+    `${BASE_URL}/api/financial-insights/categorize`,
+    {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ transactions, categories }),
+    },
+  );
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    throw new Error(
+      body.error || `Could not categorize transactions (${response.status})`,
+    );
+  }
+
+  return response.json();
+}
