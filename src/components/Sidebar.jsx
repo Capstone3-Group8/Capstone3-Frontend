@@ -10,8 +10,15 @@ export default function Sidebar({ user, onLogout }) {
   const linkClass = ({ isActive }) =>
     `rounded-md px-3 py-2 text-sm font-medium ${
       isActive
-        ? 'bg-(--accent-bg) text-(--accent)'
-        : 'hover:bg-(--accent-bg) hover:text-(--text-h)'
+        ? 'bg-(--primary-soft) !text-(--primary)'
+        : 'hover:bg-(--primary-soft) hover:text-(--text-h)'
+    }`;
+
+  const authLinkClass = ({ isActive }) =>
+    `block w-full rounded-md px-3 py-2 text-center text-sm font-medium ${
+      isActive
+        ? 'bg-(--primary-soft) !text-(--primary) ring-1 ring-(--primary)'
+        : 'hover:bg-(--primary-soft) hover:text-(--text-h)'
     }`;
 
   return (
@@ -56,19 +63,19 @@ export default function Sidebar({ user, onLogout }) {
             </span>
             <button
               onClick={onLogout}
-              className='rounded-md px-3 py-2 text-left text-sm font-medium hover:bg-(--accent-bg) hover:text-(--text-h)'
+              className='rounded-md px-3 py-2 text-left text-sm font-medium hover:bg-(--primary-soft) hover:text-(--text-h)'
             >
               Log out
             </button>
           </>
         ) : (
           <>
-            <NavLink to='/login' className={linkClass}>
+            <NavLink to='/login' className={authLinkClass}>
               Log in
             </NavLink>
             <NavLink
               to='/signup'
-              className='rounded-md bg-(--accent) px-3 py-2 text-center text-sm font-medium text-white'
+              className='block w-full rounded-md bg-(--primary) px-3 py-2 text-center text-sm font-semibold !text-white hover:opacity-90'
             >
               Sign up
             </NavLink>
