@@ -10,8 +10,29 @@ import {
   createAccount,
   deleteAccount,
 } from "../api/accounts";
-import { getCategories } from "../api/categories";
-import { categorizeTransactions } from "../api/financialInsights";
+import { getCategories, createCategory } from "../api/categories";
+import {
+  categorizeTransactions,
+  suggestCategoryForTransaction,
+} from "../api/financialInsights";
+
+const EXPENSE_PRESETS = [
+  "Groceries",
+  "Rent",
+  "Utilities",
+  "Entertainment",
+  "Transportation",
+  "Subscriptions",
+];
+
+const INCOME_PRESETS = [
+  "Salary",
+  "Freelance",
+  "Investment",
+  "Gift",
+  "Refund",
+  "Bonus",
+];
 
 export default function TransactionsPage() {
   const [transactions, setTransactions] = useState([]);
@@ -23,6 +44,8 @@ export default function TransactionsPage() {
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isCategorizing, setIsCategorizing] = useState(false);
+  const [isSuggestingCategory, setIsSuggestingCategory] = useState(false);
+  const [showCategoryPresets, setShowCategoryPresets] = useState(false);
 
   const [accountForm, setAccountForm] = useState({
     name: "",
@@ -33,7 +56,8 @@ export default function TransactionsPage() {
 
   const [form, setForm] = useState({
     account_id: "",
-    category_id: "",
+    categoryName: "",
+    categoryType: "",
     amount: "",
     type: "withdrawal",
     date: "",
@@ -276,14 +300,83 @@ export default function TransactionsPage() {
     }
   }
 
+  // Ask AI to pick a category name from the description the user just typed.
+  async function handleSuggestCategory() {
+    if (!form.description.trim()) {
+      setError("Add a description first, then I can suggest a category.");
+      return;
+    }
+
+    setIsSuggestingCategory(true);
+    setError("");
+
+    try {
+      const result = await suggestCategoryForTransaction(
+        {
+          description: form.description,
+          amount: form.amount,
+          type: form.type,
+        },
+        categories.map((cat) => ({ name: cat.name, type: cat.type })),
+      );
+
+      setForm((current) => ({
+        ...current,
+        categoryName: result.data.name,
+        categoryType: result.data.type,
+      }));
+      setShowCategoryPresets(false);
+    } catch (err) {
+      setError(err.message || "Could not suggest a category");
+    } finally {
+      setIsSuggestingCategory(false);
+    }
+  }
+
+  // Pick a category from the fixed default list instead of typing or AI.
+  function handlePickPreset(name) {
+    setForm((current) => ({
+      ...current,
+      categoryName: name,
+      categoryType: current.type === "deposit" ? "Income" : "Expense",
+    }));
+    setShowCategoryPresets(false);
+  }
+
+  function handleClearCategory() {
+    setForm((current) => ({ ...current, categoryName: "", categoryType: "" }));
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
 
+    if (!form.categoryName) {
+      setError("Pick a category for this transaction first.");
+      return;
+    }
+
     try {
+      // Reuse an existing category with the same name and type, or create
+      // one on the fly — categories are no longer added by hand.
+      let category = categories.find(
+        (cat) =>
+          cat.name.toLowerCase() === form.categoryName.toLowerCase() &&
+          cat.type === form.categoryType,
+      );
+
+      if (!category) {
+        category = await createCategory({
+          name: form.categoryName,
+          type: form.categoryType,
+          budget: 0,
+        });
+        setCategories((current) => [category, ...current]);
+      }
+
       const newTransaction = await createTransaction({
         account_id: Number(form.account_id),
-        category_id: Number(form.category_id),
+        category_id: category.id,
         amount: Number(form.amount),
         type: form.type,
         date: form.date,
@@ -297,12 +390,14 @@ export default function TransactionsPage() {
 
       setForm({
         account_id: "",
-        category_id: "",
+        categoryName: "",
+        categoryType: "",
         amount: "",
-        type: "deposit",
+        type: "withdrawal",
         date: "",
         description: "",
       });
+      setShowCategoryPresets(false);
 
       setIsModalOpen(false);
     } catch (err) {
@@ -647,25 +742,6 @@ export default function TransactionsPage() {
                 ))}
               </select>
 
-              <select
-                name="category_id"
-                value={form.category_id}
-                onChange={handleChange}
-                className="rounded border border-(--border) bg-(--bg) p-2"
-                required
-              >
-                <option value="">Select Category</option>
-
-                {categories.map((cat) => (
-                  <option
-                    key={cat.id}
-                    value={cat.id}
-                  >
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
-
               <input
                 type="number"
                 name="amount"
@@ -691,21 +767,79 @@ export default function TransactionsPage() {
               </select>
 
               <input
-                type="date"
-                name="date"
-                value={form.date}
-                onChange={handleChange}
-                className="rounded border border-(--border) bg-(--bg) p-2"
-                required
-              />
-
-              <input
                 type="text"
                 name="description"
                 value={form.description}
                 onChange={handleChange}
                 placeholder="Description"
                 className="rounded border border-(--border) bg-(--bg) p-2"
+              />
+
+              <div>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={handleSuggestCategory}
+                    disabled={isSuggestingCategory}
+                    className="flex-1 rounded border border-(--border) bg-(--bg) p-2 text-sm font-medium text-(--primary) disabled:opacity-50"
+                  >
+                    {isSuggestingCategory
+                      ? "Asking AI..."
+                      : "✨ AI suggest category"}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowCategoryPresets((current) => !current)}
+                    className="flex-1 rounded border border-(--border) bg-(--bg) p-2 text-sm font-medium"
+                  >
+                    Choose from list
+                  </button>
+                </div>
+
+                {showCategoryPresets && (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {(form.type === "deposit"
+                      ? INCOME_PRESETS
+                      : EXPENSE_PRESETS
+                    ).map((name) => (
+                      <button
+                        key={name}
+                        type="button"
+                        onClick={() => handlePickPreset(name)}
+                        className="rounded-full border border-(--border) px-3 py-1 text-sm hover:border-(--primary)"
+                      >
+                        {name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {form.categoryName && (
+                  <p className="mt-2 text-sm">
+                    Category:{" "}
+                    <span className="font-semibold text-(--text-h)">
+                      {form.categoryName} ({form.categoryType})
+                    </span>{" "}
+                    <button
+                      type="button"
+                      onClick={handleClearCategory}
+                      className="text-(--muted) hover:text-red-500"
+                      aria-label="Clear category"
+                    >
+                      ×
+                    </button>
+                  </p>
+                )}
+              </div>
+
+              <input
+                type="date"
+                name="date"
+                value={form.date}
+                onChange={handleChange}
+                className="rounded border border-(--border) bg-(--bg) p-2"
+                required
               />
 
               <button
