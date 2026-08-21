@@ -1,26 +1,16 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import {
-  getCategories,
-  createCategory,
-  updateCategory,
-  deleteCategory,
-} from "../api/categories";
+import { getCategories, updateCategory, deleteCategory } from "../api/categories";
 import { getBudgetAnalysis } from "../api/budgetAnalysis";
 import { askFinancialQuestion } from "../api/financialInsights";
-// This page shows the full CRUD loop against the backend:
-// read the list, create a category, and delete it.
+// Category rows are created from the Transactions page (via AI suggestion or
+// the default list), not here — this page is only for setting budgets and
+// reviewing spend against them.
 export default function CategoryPage() {
-  const [category, setCategory] = useState({
-    name: "",
-    type: "",
-    budget: "",
-  });
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [budgetAnalysis, setBudgetAnalysis] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [aiExplanations, setAiExplanations] = useState({});
   const [explainingCategoryId, setExplainingCategoryId] = useState(null);
   // Load the categories once, when the page first appears.
@@ -34,24 +24,6 @@ export default function CategoryPage() {
   useEffect(() => {
     getBudgetAnalysis(1).then(setBudgetAnalysis);
   }, [categories]);
-
-  // Create a category on the server, then add the returned row to the list on screen.
-  async function handleCreate(e) {
-    e.preventDefault(); // stop the browser from reloading on submit
-    try {
-      const newCategory = await createCategory({
-        name: category.name,
-        type: category.type,
-        budget: category.budget,
-      });
-      setCategories([newCategory, ...categories]);
-      setCategory({ name: "", type: "", budget: "" });
-      setError(null);
-      setIsModalOpen(false);
-    } catch (err) {
-      setError(err.message);
-    }
-  }
 
   // Delete on the server, then remove it from the list.
   async function handleDelete(id) {
@@ -108,21 +80,11 @@ export default function CategoryPage() {
 
   return (
     <section className="mx-auto w-full max-w-5xl p-4">
-      <div className="mb-8 flex items-end justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-(--text-h)">Categories & Budgets</h1>
-          <p className="mt-1 text-(--text)">
-            Organize your transactions and set monthly spending goals
-          </p>
-        </div>
-
-        <button
-          type="button"
-          onClick={() => setIsModalOpen(true)}
-          className="primary-btn shrink-0"
-        >
-          + Add category
-        </button>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-(--text-h)">Categories & Budgets</h1>
+        <p className="mt-1 text-(--text)">
+          Set monthly spending goals for the categories your transactions use
+        </p>
       </div>
 
       {/* Show any error instead of failing silently. */}
@@ -130,73 +92,6 @@ export default function CategoryPage() {
         <p className="mb-4 rounded-md bg-red-500/10 px-3 py-2 text-red-500">
           {error}
         </p>
-      )}
-
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="w-full max-w-xl rounded-xl border border-(--border) bg-(--bg) p-6 shadow-2xl">
-            <div className="mb-5 flex items-start justify-between gap-4">
-              <div>
-                <h2 className="text-2xl font-bold text-(--text-h)">
-                  Add a category
-                </h2>
-                <p className="mt-1 text-(--text)">
-                  Create a category and choose its monthly budget.
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setIsModalOpen(false)}
-                className="text-2xl text-(--text) hover:text-(--text-h)"
-                aria-label="Close category form"
-              >
-                ×
-              </button>
-            </div>
-
-            <form onSubmit={handleCreate} className="flex flex-col gap-3">
-              <input
-                value={category.name}
-                onChange={(e) =>
-                  setCategory({ ...category, name: e.target.value })
-                }
-                placeholder="Category name"
-                className="rounded border border-(--border) bg-(--bg) p-3"
-                required
-              />
-
-              <select
-                value={category.type}
-                onChange={(e) =>
-                  setCategory({ ...category, type: e.target.value })
-                }
-                className="rounded border border-(--border) bg-(--bg) p-3"
-                required
-              >
-                <option value="">Select type</option>
-                <option value="Income">Income</option>
-                <option value="Expense">Expense</option>
-              </select>
-
-              <input
-                type="number"
-                min="0"
-                step="0.01"
-                value={category.budget}
-                onChange={(e) =>
-                  setCategory({ ...category, budget: e.target.value })
-                }
-                placeholder="Monthly budget"
-                className="rounded border border-(--border) bg-(--bg) p-3"
-              />
-
-              <button type="submit" className="primary-btn">
-                Add Category
-              </button>
-            </form>
-          </div>
-        </div>
       )}
 
       <div className="mb-4">
@@ -210,7 +105,8 @@ export default function CategoryPage() {
         <div className="rounded-xl border border-(--border) p-8 text-center">
           <p className="font-semibold text-(--text-h)">No categories yet</p>
           <p className="mt-1 text-sm text-(--text)">
-            Add your first category to start organizing transactions.
+            Categories show up here once you add a transaction and pick or
+            AI-suggest a category for it on the Transactions page.
           </p>
         </div>
       ) : (
