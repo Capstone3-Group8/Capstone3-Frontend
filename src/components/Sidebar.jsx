@@ -44,6 +44,9 @@ export default function Sidebar({ user, onLogout }) {
         <NavLink to='/ai-insights' className={linkClass}>
           AI Insights
         </NavLink>
+        <NavLink to='/linked-accounts' className={linkClass}>
+          Linked Accounts
+        </NavLink>
         {/* Only show the protected link once someone is logged in. */}
         {/* {user && (
           <NavLink to='/protected' className={linkClass}>

@@ -40,3 +40,10 @@ export async function getPlaidTransactions() {
     });
     return res.data
 }
+
+export async function getSuggestedCategories() {
+  const res = await axios.get(`${BASE_URL}/api/plaid/suggested-categories`, {
+    withCredentials: true,
+  });
+  return res.data;
+}
